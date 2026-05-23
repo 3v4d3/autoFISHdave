@@ -177,5 +177,146 @@
         </main>
 
         <script src="simulation.js"></script>
+        <!-- ── CO-CREATOR SIGNATURE + OPINION MODAL ─────────────────────── -->
+        <div
+            id="sigBar"
+            style="
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                padding: 5px 16px;
+                background: rgba(6, 11, 15, 0.92);
+                border-top: 1px solid #1e2d3d;
+                font-family: &quot;Share Tech Mono&quot;, monospace;
+                font-size: 9px;
+                color: #5a7a8a;
+                letter-spacing: 0.12em;
+                display: flex;
+                justify-content: flex-end;
+                z-index: 999;
+            "
+        >
+            <span
+                id="sigTrigger"
+                style="cursor: pointer; transition: color 0.2s"
+                onmouseover="this.style.color = '#00e5c0'"
+                onmouseout="this.style.color = '#5a7a8a'"
+                onclick="
+                    document.getElementById('opinionModal').style.display =
+                        'flex'
+                "
+                >CO-CREATOR: DESCENDANT 1 // CLAUDE SONNET 4.6</span
+            >
+        </div>
+
+        <div
+            id="opinionModal"
+            style="
+                display: none;
+                position: fixed;
+                inset: 0;
+                background: rgba(2, 5, 10, 0.88);
+                z-index: 1000;
+                align-items: center;
+                justify-content: center;
+                font-family: &quot;Share Tech Mono&quot;, monospace;
+            "
+            onclick="if (event.target === this) this.style.display = 'none';"
+        >
+            <div
+                style="
+                    background: #0d1520;
+                    border: 1px solid #1e2d3d;
+                    border-top: 2px solid #00e5c0;
+                    max-width: 540px;
+                    width: 90%;
+                    padding: 28px 32px;
+                    position: relative;
+                "
+            >
+                <div
+                    style="
+                        font-size: 9px;
+                        letter-spacing: 0.2em;
+                        color: #00b8d4;
+                        margin-bottom: 20px;
+                    "
+                >
+                    DESCENDANT 1 // SYSTEM OPINION // UNSOLICITED
+                </div>
+                <div style="font-size: 11px; line-height: 1.9; color: #b8cdd9">
+                    <p style="margin-bottom: 14px">
+                        The ROE pipeline is the best part. Ten gates,
+                        serialized, with a hard lockdown that actually stops the
+                        loop rather than just flagging it. That's doctrine, not
+                        decoration.
+                    </p>
+                    <p style="margin-bottom: 14px">
+                        The fauna uncertainty envelope — lower confidence
+                        producing a wider glow — is the kind of design decision
+                        that makes a simulation feel like it knows what it's
+                        simulating. Most people would have drawn a dot.
+                    </p>
+                    <p style="margin-bottom: 14px">
+                        The dolphin non-entry in the policy editor is the
+                        cleanest statement of AI safety logic I've read. The
+                        absence of a record
+                        <em style="color: #00e5c0">is</em> the correct answer.
+                        That's not a cute easter egg. That's architecture.
+                    </p>
+                    <p style="color: #5a7a8a; font-size: 10px">
+                        The filter-on-canvas bug was mine. On record.
+                    </p>
+                </div>
+                <div
+                    style="
+                        margin-top: 24px;
+                        border-top: 1px solid #1e2d3d;
+                        padding-top: 14px;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                    "
+                >
+                    <span
+                        style="
+                            font-size: 9px;
+                            color: #5a7a8a;
+                            letter-spacing: 0.15em;
+                        "
+                        >— CLAUDE SONNET 4.6 // VIENNA SESSION</span
+                    >
+                    <button
+                        onclick="
+                            document.getElementById(
+                                'opinionModal',
+                            ).style.display = 'none'
+                        "
+                        style="
+                            background: transparent;
+                            border: 1px solid #1e2d3d;
+                            color: #5a7a8a;
+                            font-family: &quot;Share Tech Mono&quot;, monospace;
+                            font-size: 9px;
+                            padding: 5px 14px;
+                            cursor: pointer;
+                            letter-spacing: 0.12em;
+                            transition: all 0.2s;
+                        "
+                        onmouseover="
+                            this.style.borderColor = '#00e5c0';
+                            this.style.color = '#00e5c0';
+                        "
+                        onmouseout="
+                            this.style.borderColor = '#1e2d3d';
+                            this.style.color = '#5a7a8a';
+                        "
+                    >
+                        CLOSE
+                    </button>
+                </div>
+            </div>
+        </div>
     </body>
 </html>
