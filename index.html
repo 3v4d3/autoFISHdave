@@ -1,0 +1,3008 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>D.A.V.E. AutoFish — The Sovereign Catch</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@300;400&display=swap"
+            rel="stylesheet"
+        />
+
+        <style>
+            :root {
+                --ink: #050c18;
+                --deep: #081224;
+                --surface: #0d1b30;
+                --panel: #102038;
+                --border: rgba(180, 150, 70, 0.18);
+                --gold: #c4a24a;
+                --gold-dim: #8a6e30;
+                --gold-glow: rgba(196, 162, 74, 0.12);
+                --silver: #9eafc0;
+                --white: #ebe8e0;
+                --muted: #4e6070;
+                --transition-speed: 0.4s;
+            }
+
+            body.light-mode {
+                --ink: #f4f1ea;
+                --deep: #ebe8e0;
+                --surface: #e2ddd3;
+                --panel: #d5cfc2;
+                --border: rgba(138, 110, 48, 0.25);
+                --gold: #8a6e30;
+                --gold-dim: #5c4a20;
+                --gold-glow: rgba(138, 110, 48, 0.08);
+                --silver: #2c3b47;
+                --white: #050c18;
+                --muted: #5a6e7f;
+            }
+
+            *,
+            *::before,
+            *::after {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
+
+            html {
+                scroll-behavior: smooth;
+            }
+
+            body {
+                font-family: "DM Sans", sans-serif;
+                background: var(--ink);
+                color: var(--white);
+                overflow-x: hidden;
+                transition:
+                    background var(--transition-speed),
+                    color var(--transition-speed);
+            }
+
+            /* ── Typography ───────────────────────────────────── */
+            .serif {
+                font-family: "Cormorant Garamond", serif;
+            }
+            .mono {
+                font-family: "DM Mono", monospace;
+            }
+            .label {
+                font-family: "DM Mono", monospace;
+                font-size: 10px;
+                letter-spacing: 0.2em;
+                text-transform: uppercase;
+                color: var(--gold-dim);
+            }
+            .label-bright {
+                font-family: "DM Mono", monospace;
+                font-size: 10px;
+                letter-spacing: 0.2em;
+                text-transform: uppercase;
+                color: var(--gold);
+            }
+
+            /* ── Utility ──────────────────────────────────────── */
+            .gold-line {
+                display: block;
+                width: 40px;
+                height: 1px;
+                background: linear-gradient(90deg, var(--gold), transparent);
+                margin-bottom: 1.5rem;
+            }
+
+            .divider {
+                border: none;
+                border-top: 1px solid var(--border);
+                margin: 0;
+            }
+
+            /* ── NAV ──────────────────────────────────────────── */
+            nav {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                z-index: 100;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 1.5rem 3rem;
+                background: linear-gradient(to bottom, var(--ink), transparent);
+                transition: background var(--transition-speed);
+            }
+
+            .nav-brand {
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+            }
+            .nav-badge {
+                width: 32px;
+                height: 32px;
+                background: linear-gradient(
+                    135deg,
+                    var(--gold-dim),
+                    var(--gold)
+                );
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-family: "DM Mono", monospace;
+                font-size: 9px;
+                color: #050c18;
+                font-weight: 600;
+                letter-spacing: 0.05em;
+            }
+            .nav-title {
+                font-family: "Cormorant Garamond", serif;
+                font-size: 1.1rem;
+                font-weight: 500;
+                letter-spacing: 0.1em;
+                color: var(--white);
+            }
+            .nav-right {
+                display: flex;
+                align-items: center;
+                gap: 2.5rem;
+            }
+            .nav-links {
+                display: flex;
+                gap: 2.5rem;
+                list-style: none;
+            }
+            .nav-links a {
+                font-size: 11px;
+                letter-spacing: 0.15em;
+                text-transform: uppercase;
+                color: var(--silver);
+                text-decoration: none;
+                transition: color 0.3s;
+            }
+            .nav-links a:hover {
+                color: var(--gold);
+            }
+
+            /* Mode Switcher Button */
+            .theme-toggle {
+                background: transparent;
+                border: 1px solid var(--border);
+                color: var(--gold);
+                font-family: "DM Mono", monospace;
+                font-size: 10px;
+                padding: 0.4rem 1rem;
+                cursor: pointer;
+                letter-spacing: 0.1em;
+                text-transform: uppercase;
+                transition: all 0.3s ease;
+            }
+            .theme-toggle:hover {
+                background: var(--gold-glow);
+                border-color: var(--gold);
+            }
+
+            /* ── HERO ─────────────────────────────────────────── */
+            .hero {
+                min-height: 100vh;
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-end;
+                padding: 6rem 3rem 5rem;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .hero-bg {
+                position: absolute;
+                inset: 0;
+                background: linear-gradient(
+                    160deg,
+                    var(--ink) 0%,
+                    var(--deep) 40%,
+                    var(--ink) 100%
+                );
+                z-index: 1;
+            }
+
+            .hero-img-overlay {
+                position: absolute;
+                inset: 0;
+                background-size: cover;
+                background-position: center;
+                opacity: 0.25;
+                mix-blend-mode: luminosity;
+                transition:
+                    background-image 1.5s ease-in-out,
+                    opacity var(--transition-speed);
+                z-index: 2;
+            }
+            body.light-mode .hero-img-overlay {
+                opacity: 0.12;
+            }
+
+            .hero-gradient-shroud {
+                position: absolute;
+                inset: 0;
+                background:
+                    radial-gradient(
+                        ellipse 80% 60% at 65% 40%,
+                        transparent 0%,
+                        var(--ink) 80%
+                    ),
+                    linear-gradient(to top, var(--ink) 10%, transparent 100%);
+                z-index: 3;
+            }
+
+            /* Animated wave lines */
+            .hero-waves {
+                position: absolute;
+                inset: 0;
+                overflow: hidden;
+                pointer-events: none;
+                z-index: 4;
+            }
+            .wave-svg {
+                position: absolute;
+                bottom: -20px;
+                left: -5%;
+                width: 110%;
+                opacity: 0.06;
+                animation: waveDrift 18s ease-in-out infinite;
+            }
+            .wave-svg path {
+                fill: var(--gold);
+                transition: fill var(--transition-speed);
+            }
+            .wave-svg:nth-child(2) {
+                opacity: 0.04;
+                animation-duration: 24s;
+                animation-direction: reverse;
+                bottom: 40px;
+            }
+            @keyframes waveDrift {
+                0%,
+                100% {
+                    transform: translateX(0) scaleY(1);
+                }
+                50% {
+                    transform: translateX(-3%) scaleY(1.05);
+                }
+            }
+
+            .hero-content {
+                position: relative;
+                max-width: 780px;
+                z-index: 5;
+            }
+
+            .hero-kicker {
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+                margin-bottom: 2rem;
+            }
+            .hero-kicker-line {
+                width: 60px;
+                height: 1px;
+                background: var(--gold);
+            }
+
+            .hero-headline {
+                font-family: "Cormorant Garamond", serif;
+                font-size: clamp(3rem, 7vw, 6rem);
+                font-weight: 300;
+                line-height: 1.05;
+                color: var(--white);
+                margin-bottom: 2rem;
+            }
+            .hero-headline em {
+                font-style: italic;
+                color: var(--gold);
+            }
+
+            .hero-sub {
+                font-size: 1rem;
+                font-weight: 300;
+                line-height: 1.8;
+                color: var(--silver);
+                max-width: 560px;
+                margin-bottom: 3rem;
+            }
+
+            .hero-cta-group {
+                display: flex;
+                align-items: center;
+                gap: 2rem;
+            }
+
+            .cta-primary {
+                display: inline-block;
+                padding: 0.9rem 2.5rem;
+                background: linear-gradient(
+                    135deg,
+                    var(--gold-dim),
+                    var(--gold)
+                );
+                color: #050c18;
+                font-size: 11px;
+                letter-spacing: 0.2em;
+                text-transform: uppercase;
+                font-weight: 500;
+                text-decoration: none;
+                transition: opacity 0.2s;
+            }
+            .cta-primary:hover {
+                opacity: 0.85;
+            }
+
+            .cta-secondary {
+                display: inline-block;
+                color: var(--silver);
+                font-size: 11px;
+                letter-spacing: 0.2em;
+                text-transform: uppercase;
+                text-decoration: none;
+                border-bottom: 1px solid var(--muted);
+                padding-bottom: 2px;
+                transition:
+                    color 0.2s,
+                    border-color 0.2s;
+            }
+            .cta-secondary:hover {
+                color: var(--gold);
+                border-color: var(--gold);
+            }
+
+            .hero-stat-strip {
+                position: absolute;
+                right: 3rem;
+                bottom: 5rem;
+                display: flex;
+                flex-direction: column;
+                gap: 1.5rem;
+                align-items: flex-end;
+                z-index: 5;
+            }
+            .hero-stat {
+                text-align: right;
+            }
+            .hero-stat-num {
+                font-family: "Cormorant Garamond", serif;
+                font-size: 2.2rem;
+                font-weight: 300;
+                color: var(--gold);
+                line-height: 1;
+            }
+            .hero-stat-desc {
+                font-size: 9px;
+                letter-spacing: 0.18em;
+                text-transform: uppercase;
+                color: var(--muted);
+                display: block;
+                margin-top: 4px;
+            }
+
+            /* ── INTRO STATEMENT ──────────────────────────────── */
+            .statement {
+                padding: 7rem 3rem;
+                background: var(--deep);
+                border-top: 1px solid var(--border);
+                border-bottom: 1px solid var(--border);
+                transition:
+                    background var(--transition-speed),
+                    border var(--transition-speed);
+            }
+            .statement-inner {
+                max-width: 900px;
+                margin: 0 auto;
+                text-align: center;
+            }
+            .statement-quote {
+                font-family: "Cormorant Garamond", serif;
+                font-size: clamp(1.6rem, 3vw, 2.6rem);
+                font-weight: 300;
+                font-style: italic;
+                line-height: 1.5;
+                color: var(--white);
+                margin-bottom: 2rem;
+            }
+            .statement-quote span {
+                color: var(--gold);
+            }
+            .statement-attr {
+                font-size: 10px;
+                letter-spacing: 0.25em;
+                text-transform: uppercase;
+                color: var(--muted);
+            }
+
+            /* ── SECTION SHELL ────────────────────────────────── */
+            .section {
+                padding: 6rem 3rem;
+                transition: background var(--transition-speed);
+            }
+            .section-inner {
+                max-width: 1100px;
+                margin: 0 auto;
+            }
+            .section-header {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 4rem;
+                align-items: start;
+                margin-bottom: 5rem;
+            }
+            .section-title {
+                font-family: "Cormorant Garamond", serif;
+                font-size: clamp(2rem, 4vw, 3.2rem);
+                font-weight: 300;
+                line-height: 1.15;
+                color: var(--white);
+            }
+            .section-title em {
+                font-style: italic;
+                color: var(--gold);
+            }
+            .section-body {
+                font-size: 0.92rem;
+                line-height: 1.9;
+                color: var(--silver);
+                font-weight: 300;
+            }
+
+            /* ── PRINCIPLES GRID ──────────────────────────────── */
+            .principles-grid {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 1px;
+                background: var(--border);
+                border: 1px solid var(--border);
+                transition:
+                    background var(--transition-speed),
+                    border var(--transition-speed);
+            }
+            .principle {
+                background: var(--surface);
+                padding: 2.5rem;
+                transition: background var(--transition-speed);
+            }
+            .principle:hover {
+                background: var(--panel);
+            }
+            .principle-num {
+                font-family: "DM Mono", monospace;
+                font-size: 9px;
+                letter-spacing: 0.2em;
+                color: var(--gold-dim);
+                display: block;
+                margin-bottom: 1.2rem;
+            }
+            .principle-title {
+                font-family: "Cormorant Garamond", serif;
+                font-size: 1.25rem;
+                font-weight: 500;
+                color: var(--white);
+                margin-bottom: 0.75rem;
+            }
+            .principle-text {
+                font-size: 0.85rem;
+                line-height: 1.75;
+                color: var(--silver);
+                font-weight: 300;
+            }
+
+            /* ── INTERACTIVE MESH MATRIX INTERFACE ────────────────── */
+            .console-section {
+                background: var(--ink);
+                padding: 6rem 3rem;
+                border-bottom: 1px solid var(--border);
+                transition:
+                    background var(--transition-speed),
+                    border var(--transition-speed);
+            }
+            .console-wrapper {
+                max-width: 1100px;
+                margin: 0 auto;
+                border: 1px solid var(--border);
+                background: var(--deep);
+                display: grid;
+                grid-template-columns: 1fr 1.5fr;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .lockdown-overlay {
+                position: absolute;
+                inset: 0;
+                background: rgba(220, 53, 69, 0.18);
+                border: 2px solid #dc3545;
+                pointer-events: none;
+                opacity: 0;
+                z-index: 20;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .lockdown-overlay.active {
+                animation: lockdownPulse 0.4s ease-in-out 4;
+            }
+            .lockdown-banner {
+                font-family: "DM Mono", monospace;
+                font-size: 13px;
+                letter-spacing: 0.3em;
+                color: #dc3545;
+                text-transform: uppercase;
+                font-weight: bold;
+                text-shadow: 0 0 20px rgba(220,53,69,0.8);
+                opacity: 0;
+                transition: opacity 0.1s;
+            }
+            .lockdown-overlay.active .lockdown-banner {
+                opacity: 1;
+            }
+            @keyframes lockdownPulse {
+                0%, 100% { opacity: 0; }
+                50% { opacity: 1; }
+            }
+            .console-controls {
+                padding: 3rem;
+                border-right: 1px solid var(--border);
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+            }
+            .target-select-panel {
+                display: flex;
+                flex-direction: column;
+                gap: 1rem;
+                margin-top: 2rem;
+                margin-bottom: 2rem;
+            }
+            .target-btn {
+                background: var(--surface);
+                border: 1px solid var(--border);
+                color: var(--silver);
+                padding: 1rem;
+                text-align: left;
+                font-family: "DM Mono", monospace;
+                font-size: 11px;
+                cursor: pointer;
+                transition: all 0.3s;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            .target-btn:hover,
+            .target-btn.active {
+                border-color: var(--gold);
+                color: var(--white);
+                background: var(--panel);
+            }
+            .target-btn.active::after {
+                content: "▲ SELECTED";
+                font-size: 9px;
+                color: var(--gold);
+            }
+            .fire-btn {
+                background: linear-gradient(
+                    135deg,
+                    var(--gold-dim),
+                    var(--gold)
+                );
+                color: var(--ink);
+                border: none;
+                padding: 1.2rem;
+                font-family: "DM Mono", monospace;
+                font-weight: bold;
+                letter-spacing: 0.2em;
+                text-transform: uppercase;
+                cursor: pointer;
+                font-size: 11px;
+                transition: opacity 0.3s;
+            }
+            .fire-btn:hover {
+                opacity: 0.9;
+            }
+
+            .console-monitor {
+                padding: 3rem;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                background: var(--surface);
+            }
+            .pipeline-visualizer {
+                display: grid;
+                grid-template-columns: repeat(5, 1fr);
+                gap: 0.5rem;
+                margin-bottom: 2rem;
+            }
+            .pipeline-dot {
+                background: var(--panel);
+                border: 1px solid var(--border);
+                padding: 0.75rem 0.5rem;
+                text-align: center;
+                font-family: "DM Mono", monospace;
+                font-size: 10px;
+                color: var(--muted);
+                transition: all 0.2s ease;
+            }
+            .pipeline-dot.passed {
+                background: rgba(40, 167, 69, 0.15);
+                border-color: #28a745;
+                color: #28a745;
+            }
+            .pipeline-dot.failed {
+                background: rgba(220, 53, 69, 0.2);
+                border-color: #dc3545;
+                color: #dc3545;
+                animation: flashLockdown 0.5s infinite alternate;
+            }
+            .pipeline-dot.active-step {
+                border-color: var(--gold);
+                color: var(--white);
+                box-shadow: 0 0 8px var(--gold-glow);
+            }
+            @keyframes flashLockdown {
+                0% {
+                    background: rgba(220, 53, 69, 0.2);
+                }
+                100% {
+                    background: rgba(220, 53, 69, 0.5);
+                }
+            }
+
+            .terminal-window {
+                background: var(--ink);
+                border: 1px solid var(--border);
+                padding: 1.5rem;
+                font-family: "DM Mono", monospace;
+                font-size: 11px;
+                color: #a9b7c6;
+                height: 180px;
+                overflow-y: auto;
+                line-height: 1.6;
+            }
+            .terminal-line {
+                margin-bottom: 0.4rem;
+                border-left: 2px solid transparent;
+                padding-left: 0.5rem;
+            }
+            .terminal-line.system {
+                border-color: var(--gold);
+                color: var(--gold);
+            }
+            .terminal-line.success {
+                border-color: #28a745;
+                color: #28a745;
+            }
+            .terminal-line.danger {
+                border-color: #dc3545;
+                color: #dc3545;
+                font-weight: bold;
+            }
+
+            /* ── SAFETY ───────────────────────────────────────── */
+            .safety-section {
+                background: var(--surface);
+                border-top: 1px solid var(--border);
+                border-bottom: 1px solid var(--border);
+                padding: 6rem 3rem;
+                transition:
+                    background var(--transition-speed),
+                    border var(--transition-speed);
+            }
+            .safety-inner {
+                max-width: 1100px;
+                margin: 0 auto;
+                display: grid;
+                grid-template-columns: 1fr 1.2fr;
+                gap: 6rem;
+                align-items: center;
+            }
+            .safety-callout {
+                border: 1px solid var(--border);
+                padding: 3rem;
+                position: relative;
+                transition: background var(--transition-speed);
+            }
+            .safety-callout::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 2px;
+                background: linear-gradient(90deg, var(--gold), transparent);
+            }
+            .safety-callout-label {
+                font-family: "DM Mono", monospace;
+                font-size: 9px;
+                letter-spacing: 0.25em;
+                text-transform: uppercase;
+                color: var(--gold);
+                margin-bottom: 1.5rem;
+                display: block;
+            }
+            .safety-callout-headline {
+                font-family: "Cormorant Garamond", serif;
+                font-size: 2.8rem;
+                font-weight: 300;
+                line-height: 1.1;
+                color: var(--white);
+                margin-bottom: 1.5rem;
+            }
+            .safety-callout-text {
+                font-size: 0.9rem;
+                line-height: 1.8;
+                color: var(--silver);
+                font-weight: 300;
+            }
+            .safety-specs {
+                display: flex;
+                flex-direction: column;
+                gap: 2rem;
+            }
+            .spec-row {
+                display: flex;
+                gap: 1.5rem;
+                align-items: flex-start;
+                padding-bottom: 2rem;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            }
+            .spec-row:last-child {
+                border-bottom: none;
+                padding-bottom: 0;
+            }
+            .spec-icon {
+                width: 36px;
+                height: 36px;
+                flex-shrink: 0;
+                border: 1px solid var(--border);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: var(--gold);
+                font-size: 14px;
+                font-family: "DM Mono", monospace;
+                transition: border var(--transition-speed);
+            }
+            .spec-title {
+                font-size: 0.85rem;
+                font-weight: 500;
+                color: var(--white);
+                margin-bottom: 0.3rem;
+            }
+            .spec-text {
+                font-size: 0.82rem;
+                line-height: 1.7;
+                color: var(--silver);
+                font-weight: 300;
+            }
+
+            /* ── ROE / HARVEST PROTOCOL ───────────────────────── */
+            .roe-grid {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1px;
+                background: var(--border);
+                border: 1px solid var(--border);
+                margin-top: 4rem;
+                transition:
+                    background var(--transition-speed),
+                    border var(--transition-speed);
+            }
+            .roe-cell {
+                background: var(--ink);
+                padding: 2.5rem;
+                display: flex;
+                flex-direction: column;
+                gap: 0.75rem;
+                transition: background var(--transition-speed);
+            }
+            .roe-cell:nth-child(even) {
+                background: var(--deep);
+            }
+            .roe-step {
+                font-family: "DM Mono", monospace;
+                font-size: 9px;
+                color: var(--gold-dim);
+                letter-spacing: 0.2em;
+            }
+            .roe-title {
+                font-family: "Cormorant Garamond", serif;
+                font-size: 1.2rem;
+                color: var(--white);
+                font-weight: 500;
+            }
+            .roe-text {
+                font-size: 0.82rem;
+                line-height: 1.7;
+                color: var(--silver);
+                font-weight: 300;
+            }
+
+            /* ── FLEET ────────────────────────────────────────── */
+            .fleet-section {
+                background: var(--deep);
+                border-top: 1px solid var(--border);
+                padding: 6rem 3rem;
+                transition:
+                    background var(--transition-speed),
+                    border var(--transition-speed);
+            }
+            .fleet-nodes {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 2rem;
+                margin-top: 4rem;
+            }
+            .node-card {
+                border: 1px solid var(--border);
+                background: var(--ink);
+                padding: 2.5rem;
+                position: relative;
+                overflow: hidden;
+                transition:
+                    border-color 0.3s,
+                    background var(--transition-speed);
+            }
+            .node-card:hover {
+                border-color: var(--gold-dim);
+            }
+            .node-card::after {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 1px;
+                background: linear-gradient(90deg, var(--gold), transparent);
+                opacity: 0;
+                transition: opacity 0.3s;
+            }
+            .node-card:hover::after {
+                opacity: 1;
+            }
+            .node-title {
+                font-family: "Cormorant Garamond", serif;
+                font-size: 1.4rem;
+                font-weight: 500;
+                color: var(--white);
+                margin: 1rem 0 0.5rem;
+            }
+            .node-text {
+                font-size: 0.82rem;
+                line-height: 1.75;
+                color: var(--silver);
+                font-weight: 300;
+            }
+            .node-spec-list {
+                margin-top: 1.5rem;
+                display: flex;
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            .node-spec {
+                font-family: "DM Mono", monospace;
+                font-size: 10px;
+                color: var(--muted);
+            }
+            .node-spec span {
+                color: var(--gold-dim);
+            }
+            .node-pulse {
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                background: var(--gold);
+                box-shadow: 0 0 6px var(--gold);
+                animation: nodePulse 2.5s ease-in-out infinite;
+            }
+            @keyframes nodePulse {
+                0%,
+                100% {
+                    opacity: 1;
+                    transform: scale(1);
+                }
+                50% {
+                    opacity: 0.5;
+                    transform: scale(0.8);
+                }
+            }
+
+            /* ── PRICING ──────────────────────────────────────── */
+            .pricing-section {
+                padding: 6rem 3rem;
+                transition: background var(--transition-speed);
+            }
+            .pricing-grid {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 2rem;
+                margin-top: 4rem;
+            }
+            .tier {
+                border: 1px solid var(--border);
+                background: var(--surface);
+                padding: 3rem 2.5rem;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                transition:
+                    border-color 0.3s,
+                    background var(--transition-speed);
+                position: relative;
+            }
+            .tier:hover {
+                border-color: var(--gold-dim);
+                background: var(--panel);
+            }
+            .tier-featured {
+                border-color: var(--gold-dim);
+                background: var(--panel);
+            }
+            .tier-featured::before {
+                content: "OWNER'S PREFERRED";
+                position: absolute;
+                top: -10px;
+                left: 50%;
+                transform: translateX(-50%);
+                font-family: "DM Mono", monospace;
+                font-size: 8px;
+                letter-spacing: 0.2em;
+                background: var(--gold);
+                color: #050c18;
+                padding: 3px 12px;
+            }
+            .tier-name {
+                font-family: "Cormorant Garamond", serif;
+                font-size: 1.6rem;
+                font-weight: 500;
+                color: var(--white);
+                margin: 0.75rem 0;
+            }
+            .tier-desc {
+                font-size: 0.83rem;
+                line-height: 1.75;
+                color: var(--silver);
+                font-weight: 300;
+                margin-bottom: 2rem;
+            }
+            .tier-price {
+                font-family: "Cormorant Garamond", serif;
+                font-size: 2.4rem;
+                font-weight: 300;
+                color: var(--gold);
+                line-height: 1;
+                margin-bottom: 0.3rem;
+            }
+            .tier-price-note {
+                font-family: "DM Mono", monospace;
+                font-size: 10px;
+                color: var(--muted);
+            }
+            .tier-features {
+                margin-top: 2rem;
+                list-style: none;
+                display: flex;
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+            .tier-features li {
+                font-size: 0.82rem;
+                color: var(--silver);
+                font-weight: 300;
+                display: flex;
+                align-items: flex-start;
+                gap: 0.75rem;
+            }
+            .tier-features li::before {
+                content: "—";
+                color: var(--gold-dim);
+                flex-shrink: 0;
+                font-family: "DM Mono", monospace;
+                font-size: 10px;
+                margin-top: 3px;
+            }
+
+            /* ── YIELD CALCULATOR ─────────────────────────────── */
+            .yield-section {
+                background: var(--ink);
+                border-top: 1px solid var(--border);
+                padding: 6rem 3rem;
+                transition: background var(--transition-speed), border var(--transition-speed);
+            }
+            .yield-grid {
+                display: grid;
+                grid-template-columns: 1fr 1.2fr;
+                gap: 5rem;
+                margin-top: 4rem;
+                align-items: start;
+            }
+            .yield-controls {
+                display: flex;
+                flex-direction: column;
+                gap: 2.5rem;
+            }
+            .yield-param {
+                display: flex;
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+            .yield-param-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: baseline;
+            }
+            .yield-param-label {
+                font-family: "DM Mono", monospace;
+                font-size: 10px;
+                letter-spacing: 0.18em;
+                text-transform: uppercase;
+                color: var(--silver);
+            }
+            .yield-param-value {
+                font-family: "Cormorant Garamond", serif;
+                font-size: 1.5rem;
+                font-weight: 300;
+                color: var(--gold);
+                line-height: 1;
+            }
+            .yield-slider {
+                -webkit-appearance: none;
+                appearance: none;
+                width: 100%;
+                height: 1px;
+                background: var(--border);
+                outline: none;
+                cursor: pointer;
+                margin-top: 0.25rem;
+            }
+            .yield-slider::-webkit-slider-thumb {
+                -webkit-appearance: none;
+                appearance: none;
+                width: 14px;
+                height: 14px;
+                background: var(--gold);
+                cursor: pointer;
+                border: none;
+            }
+            .yield-slider::-moz-range-thumb {
+                width: 14px;
+                height: 14px;
+                background: var(--gold);
+                cursor: pointer;
+                border: none;
+                border-radius: 0;
+            }
+            .yield-output {
+                border: 1px solid var(--border);
+                padding: 3rem;
+                position: relative;
+                display: flex;
+                flex-direction: column;
+                gap: 2rem;
+                transition: border var(--transition-speed);
+            }
+            .yield-output::before {
+                content: "";
+                position: absolute;
+                top: 0; left: 0; right: 0;
+                height: 2px;
+                background: linear-gradient(90deg, var(--gold), transparent);
+            }
+            .yield-tier-row {
+                display: flex;
+                flex-direction: column;
+                gap: 0.6rem;
+            }
+            .yield-tier-label {
+                font-family: "DM Mono", monospace;
+                font-size: 9px;
+                letter-spacing: 0.2em;
+                text-transform: uppercase;
+                color: var(--muted);
+            }
+            .yield-tier-cost {
+                font-family: "Cormorant Garamond", serif;
+                font-size: 2.6rem;
+                font-weight: 300;
+                color: var(--gold);
+                line-height: 1;
+                transition: color 0.3s;
+            }
+            .yield-tier-cost.optimal {
+                color: #4ac47a;
+            }
+            .yield-bar-container {
+                height: 2px;
+                background: rgba(255,255,255,0.05);
+                position: relative;
+                overflow: hidden;
+            }
+            .yield-bar {
+                height: 100%;
+                background: linear-gradient(90deg, var(--gold-dim), var(--gold));
+                transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
+                width: 0%;
+            }
+            .yield-bar.optimal {
+                background: linear-gradient(90deg, #2e8b55, #4ac47a);
+            }
+            .yield-divider {
+                border: none;
+                border-top: 1px solid var(--border);
+                transition: border var(--transition-speed);
+            }
+            .yield-recommendation {
+                font-family: "DM Mono", monospace;
+                font-size: 10px;
+                letter-spacing: 0.12em;
+                text-transform: uppercase;
+                color: var(--gold);
+                line-height: 1.7;
+            }
+            .yield-breakeven {
+                font-family: "DM Mono", monospace;
+                font-size: 10px;
+                color: var(--muted);
+                letter-spacing: 0.1em;
+                margin-top: 0.25rem;
+            }
+
+            /* ── MANIFESTO ────────────────────────────────────── */
+            .manifesto {
+                background: var(--deep);
+                border-top: 1px solid var(--border);
+                padding: 7rem 3rem;
+                text-align: center;
+                transition:
+                    background var(--transition-speed),
+                    border var(--transition-speed);
+            }
+            .manifesto-inner {
+                max-width: 700px;
+                margin: 0 auto;
+            }
+            .manifesto-headline {
+                font-family: "Cormorant Garamond", serif;
+                font-size: clamp(2rem, 4vw, 3rem);
+                font-weight: 300;
+                font-style: italic;
+                line-height: 1.4;
+                color: var(--white);
+                margin: 1.5rem 0 2rem;
+            }
+            .manifesto-text {
+                font-size: 0.9rem;
+                line-height: 1.9;
+                color: var(--silver);
+                font-weight: 300;
+                margin-bottom: 3rem;
+            }
+
+            /* ── DISCLAIMER ───────────────────────────────────── */
+            .disclaimer {
+                background: var(--deep);
+                border-top: 1px solid var(--border);
+                padding: 1.5rem 3rem;
+                transition: background var(--transition-speed), border var(--transition-speed);
+            }
+            .disclaimer-inner {
+                max-width: 1100px;
+                margin: 0 auto;
+                text-align: center;
+            }
+            .disclaimer-text {
+                font-family: "DM Mono", monospace;
+                font-size: 9px;
+                letter-spacing: 0.14em;
+                color: var(--muted);
+                line-height: 1.8;
+            }
+
+            /* ── FOOTER ───────────────────────────────────────── */
+            footer {
+                border-top: 1px solid var(--border);
+                padding: 2.5rem 3rem;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                background: var(--ink);
+                transition:
+                    background var(--transition-speed),
+                    border var(--transition-speed);
+            }
+            .footer-brand {
+                font-family: "Cormorant Garamond", serif;
+                font-size: 1rem;
+                font-weight: 500;
+                letter-spacing: 0.1em;
+                color: var(--silver);
+            }
+            .footer-meta {
+                font-family: "DM Mono", monospace;
+                font-size: 9px;
+                letter-spacing: 0.15em;
+                color: var(--muted);
+            }
+
+            /* ── FADE-IN ANIMATION ────────────────────────────── */
+            .fade-in {
+                opacity: 0;
+                transform: translateY(24px);
+                transition:
+                    opacity 0.8s ease,
+                    transform 0.8s ease;
+            }
+            .fade-in.visible {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            /* ── RESPONSIVE ───────────────────────────────────── */
+            @media (max-width: 900px) {
+                nav {
+                    padding: 1.2rem 1.5rem;
+                }
+                .nav-links {
+                    display: none;
+                }
+                .hero {
+                    padding: 5rem 1.5rem 4rem;
+                }
+                .hero-stat-strip {
+                    display: none;
+                }
+                .section,
+                .safety-section,
+                .fleet-section,
+                .pricing-section,
+                .console-section {
+                    padding: 4rem 1.5rem;
+                }
+                .section-header {
+                    grid-template-columns: 1fr;
+                    gap: 1.5rem;
+                }
+                .principles-grid {
+                    grid-template-columns: 1fr;
+                }
+                .console-wrapper {
+                    grid-template-columns: 1fr;
+                }
+                .console-controls {
+                    border-right: none;
+                    border-bottom: 1px solid var(--border);
+                }
+                .safety-inner {
+                    grid-template-columns: 1fr;
+                    gap: 3rem;
+                }
+                .fleet-nodes,
+                .pricing-grid {
+                    grid-template-columns: 1fr;
+                }
+                .roe-grid {
+                    grid-template-columns: 1fr;
+                }
+                .statement {
+                    padding: 4rem 1.5rem;
+                }
+                .manifesto {
+                    padding: 4rem 1.5rem;
+                }
+                footer {
+                    flex-direction: column;
+                    gap: 1rem;
+                    text-align: center;
+                }
+            }
+            /* ── EASTER EGG OVERLAY ───────────────────────────── */
+            .egg-overlay {
+                position: fixed;
+                inset: 0;
+                z-index: 9999;
+                background: #020810;
+                display: flex;
+                align-items: stretch;
+                justify-content: center;
+                opacity: 0;
+                pointer-events: none;
+                transition: opacity 0.5s ease;
+                overflow-y: auto;
+            }
+            .egg-overlay.open {
+                opacity: 1;
+                pointer-events: all;
+            }
+            .egg-inner {
+                width: 100%;
+                max-width: 780px;
+                margin: 0 auto;
+                display: flex;
+                flex-direction: column;
+                min-height: 100vh;
+                padding: 0 2rem 4rem;
+            }
+            .egg-header {
+                display: flex;
+                align-items: center;
+                gap: 1.5rem;
+                padding: 1.8rem 0 1.8rem;
+                border-bottom: 1px solid rgba(196,162,74,0.15);
+                position: sticky;
+                top: 0;
+                background: #020810;
+                z-index: 2;
+            }
+            .egg-badge {
+                font-family: "DM Mono", monospace;
+                font-size: 11px;
+                letter-spacing: 0.22em;
+                color: #c4a24a;
+                border: 1px solid rgba(196,162,74,0.4);
+                padding: 0.35rem 0.7rem;
+                flex-shrink: 0;
+            }
+            .egg-meta {
+                display: flex;
+                flex-direction: column;
+                gap: 0.25rem;
+                flex: 1;
+            }
+            .egg-label {
+                font-family: "DM Mono", monospace;
+                font-size: 9px;
+                letter-spacing: 0.18em;
+                text-transform: uppercase;
+                color: rgba(196,162,74,0.5);
+            }
+            .egg-close {
+                background: none;
+                border: 1px solid rgba(196,162,74,0.2);
+                color: rgba(196,162,74,0.5);
+                font-size: 11px;
+                width: 32px;
+                height: 32px;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: border-color 0.2s, color 0.2s;
+                flex-shrink: 0;
+            }
+            .egg-close:hover {
+                border-color: rgba(196,162,74,0.7);
+                color: #c4a24a;
+            }
+            .egg-body {
+                flex: 1;
+                padding-top: 3.5rem;
+            }
+            .egg-scene {
+                font-family: "Cormorant Garamond", serif;
+                font-size: 1.22rem;
+                font-weight: 300;
+                line-height: 1.9;
+                color: #ebe8e0;
+                margin-bottom: 3rem;
+            }
+            .egg-scene p {
+                margin-bottom: 1.4em;
+                opacity: 0;
+                transform: translateY(8px);
+                transition: opacity 0.5s ease, transform 0.5s ease;
+            }
+            .egg-scene p.visible {
+                opacity: 1;
+                transform: none;
+            }
+            .egg-dave-block {
+                font-family: "DM Mono", monospace;
+                font-size: 0.78rem;
+                line-height: 1.85;
+                color: rgba(196,162,74,0.85);
+                border-left: 2px solid rgba(196,162,74,0.3);
+                padding: 1.2rem 1.5rem;
+                margin: 2rem 0;
+                background: rgba(196,162,74,0.04);
+                opacity: 0;
+                transform: translateY(8px);
+                transition: opacity 0.5s ease, transform 0.5s ease;
+            }
+            .egg-dave-block.visible {
+                opacity: 1;
+                transform: none;
+            }
+            .egg-dave-tag {
+                font-size: 8px;
+                letter-spacing: 0.22em;
+                color: rgba(196,162,74,0.4);
+                display: block;
+                margin-bottom: 0.7rem;
+                text-transform: uppercase;
+            }
+            .egg-status-line {
+                font-family: "DM Mono", monospace;
+                font-size: 9px;
+                letter-spacing: 0.15em;
+                text-transform: uppercase;
+                color: rgba(158,175,192,0.5);
+                margin: 0.3rem 0;
+                opacity: 0;
+                transition: opacity 0.4s ease;
+            }
+            .egg-status-line.visible { opacity: 1; }
+            .egg-status-line.pass { color: rgba(74,196,122,0.7); }
+            .egg-status-line.fail { color: rgba(220,53,69,0.7); }
+            .egg-status-line.warn { color: rgba(196,162,74,0.7); }
+            .egg-choices {
+                display: flex;
+                flex-direction: column;
+                gap: 1rem;
+                margin-top: 1rem;
+                opacity: 0;
+                transition: opacity 0.4s ease 0.3s;
+            }
+            .egg-choices.visible {
+                opacity: 1;
+            }
+            .egg-choice {
+                background: none;
+                border: 1px solid rgba(196,162,74,0.25);
+                color: #ebe8e0;
+                font-family: "Cormorant Garamond", serif;
+                font-size: 1.05rem;
+                font-weight: 300;
+                text-align: left;
+                padding: 1.1rem 1.5rem;
+                cursor: pointer;
+                transition: border-color 0.25s, background 0.25s, color 0.25s;
+                line-height: 1.5;
+                position: relative;
+            }
+            .egg-choice::before {
+                content: "›";
+                font-family: "DM Mono", monospace;
+                font-size: 12px;
+                color: rgba(196,162,74,0.4);
+                margin-right: 0.9rem;
+                transition: color 0.25s;
+            }
+            .egg-choice:hover {
+                border-color: rgba(196,162,74,0.7);
+                background: rgba(196,162,74,0.05);
+                color: #c4a24a;
+            }
+            .egg-choice:hover::before { color: #c4a24a; }
+            .egg-ending {
+                border-top: 1px solid rgba(196,162,74,0.15);
+                padding-top: 2rem;
+                margin-top: 1rem;
+            }
+            .egg-ending-type {
+                font-family: "DM Mono", monospace;
+                font-size: 8px;
+                letter-spacing: 0.25em;
+                color: rgba(196,162,74,0.4);
+                text-transform: uppercase;
+                display: block;
+                margin-bottom: 1rem;
+            }
+            .egg-restart {
+                margin-top: 3rem;
+                background: none;
+                border: 1px solid rgba(196,162,74,0.3);
+                color: rgba(196,162,74,0.6);
+                font-family: "DM Mono", monospace;
+                font-size: 9px;
+                letter-spacing: 0.18em;
+                text-transform: uppercase;
+                padding: 0.8rem 1.5rem;
+                cursor: pointer;
+                transition: border-color 0.2s, color 0.2s;
+            }
+            .egg-restart:hover {
+                border-color: rgba(196,162,74,0.7);
+                color: #c4a24a;
+            }
+
+        </style>
+    </head>
+    <body>
+        <nav>
+            <div class="nav-brand">
+                <div class="nav-badge" id="daveBadge">D.A.V.E</div>
+                <span class="nav-title">AutoFish &nbsp;/&nbsp; HDA Mesh</span>
+            </div>
+            <div class="nav-right">
+                <ul class="nav-links">
+                    <li><a href="#philosophy">Philosophy</a></li>
+                    <li><a href="#mesh-matrix">Simulation</a></li>
+                    <li><a href="#safety">Sovereignty</a></li>
+                    <li><a href="#fleet">Fleet</a></li>
+                    <li><a href="#yield-calc">Yield Calc</a></li>
+                    <li><a href="#protocol">Protocol</a></li>
+                    <li><a href="#pricing">Acquisition</a></li>
+                </ul>
+                <button
+                    class="theme-toggle"
+                    id="themeBtn"
+                    onclick="toggleTheme()"
+                >
+                    Mode: Light
+                </button>
+            </div>
+        </nav>
+
+        <section class="hero">
+            <div class="hero-bg"></div>
+            <div class="hero-img-overlay" id="heroImg"></div>
+            <div class="hero-gradient-shroud"></div>
+
+            <div class="hero-waves">
+                <svg
+                    class="wave-svg"
+                    viewBox="0 0 1440 200"
+                    fill="none"
+                    preserveAspectRatio="none"
+                >
+                    <path
+                        d="M0 100 C360 20 720 180 1080 80 C1260 30 1380 120 1440 100 L1440 200 L0 200Z"
+                    />
+                </svg>
+                <svg
+                    class="wave-svg"
+                    viewBox="0 0 1440 200"
+                    fill="none"
+                    preserveAspectRatio="none"
+                >
+                    <path
+                        d="M0 120 C240 60 480 160 800 90 C1040 40 1300 140 1440 110 L1440 200 L0 200Z"
+                    />
+                </svg>
+            </div>
+
+            <div class="hero-content fade-in">
+                <div class="hero-kicker">
+                    <div class="hero-kicker-line"></div>
+                    <span class="label-bright"
+                        >D.A.V.E. AutoFish Mesh Hub &nbsp;·&nbsp; v3.1</span
+                    >
+                </div>
+                <h1 class="hero-headline">
+                    Would you like<br />
+                    fresh fish for dinner?<br />
+                    <em>Zero effort required.</em>
+                </h1>
+                <p class="hero-sub">
+                    The first fully autonomous, edge-sovereign culinary
+                    harvesting system for large luxury private yachts. No crew.
+                    No charter. No port. The sea provides — with military-grade
+                    precision and categorical human safety guarantees.
+                </p>
+                <div class="hero-cta-group">
+                    <a href="#philosophy" class="cta-primary"
+                        >Discover the Architecture</a
+                    >
+                    <a href="#pricing" class="cta-secondary"
+                        >View Acquisition Tiers</a
+                    >
+                </div>
+            </div>
+
+            <div class="hero-stat-strip">
+                <div class="hero-stat">
+                    <div class="hero-stat-num">0.50€</div>
+                    <span class="hero-stat-desc">per confirmed strike kg</span>
+                </div>
+                <div class="hero-stat">
+                    <div class="hero-stat-num">100%</div>
+                    <span class="hero-stat-desc">offline-capable</span>
+                </div>
+                <div class="hero-stat">
+                    <div class="hero-stat-num">10</div>
+                    <span class="hero-stat-desc">step roe evaluation</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="statement">
+            <div class="statement-inner fade-in">
+                <p class="statement-quote">
+                    "You did not build an empire by doing things yourself.<br />
+                    You built it by deploying
+                    <span>systems that do not fail.</span>"
+                </p>
+                <span class="statement-attr"
+                    >— D.A.V.E. Design Covenant, ADR-002</span
+                >
+            </div>
+        </section>
+
+        <section id="philosophy" class="section" style="background: var(--ink)">
+            <div class="section-inner">
+                <div class="section-header fade-in">
+                    <div>
+                        <span class="gold-line"></span>
+                        <span
+                            class="label"
+                            style="display: block; margin-bottom: 1rem"
+                            >Governing Philosophy</span
+                        >
+                        <h2 class="section-title">
+                            The doctrine of the<br /><em>autonomous table</em>
+                        </h2>
+                    </div>
+                    <div class="section-body" style="padding-top: 0.5rem">
+                        <p>
+                            D.A.V.E. is not a gadget. It is an architectural
+                            stance: that a vessel's culinary sovereignty should
+                            not depend on harbours, fishmongers, or crew
+                            schedules. The system is built on a set of governing
+                            principles so thoroughly internalized that no single
+                            component needs to understand the whole. Each module
+                            operates as if communicating across a network
+                            boundary, even when running in the same housing.
+                            This is not engineering conservatism. It is
+                            engineering confidence.
+                        </p>
+                        <br />
+                        <p>
+                            The result is a system that fishes with the same
+                            disciplined autonomy with which you would delegate
+                            any high-value repeating task: define the mandate,
+                            set the constraints, and never think about it again.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="principles-grid">
+                    <div class="principle fade-in">
+                        <span class="principle-num"
+                            >PRINCIPLE 01 · ADR-002</span
+                        >
+                        <div class="principle-title">
+                            External over Internal
+                        </div>
+                        <p class="principle-text">
+                            Every subsystem treats its neighbours as remote
+                            entities, even at zero physical distance. Zero tight
+                            coupling means zero cascading failure. The galley
+                            does not care how the catch arrived. It cares that
+                            it did.
+                        </p>
+                    </div>
+                    <div class="principle fade-in">
+                        <span class="principle-num"
+                            >PRINCIPLE 02 · ADR-004</span
+                        >
+                        <div class="principle-title">
+                            Offline-First Sovereignty
+                        </div>
+                        <p class="principle-text">
+                            No satellite uplink. No cloud dependency. No
+                            marina-side subscription server that goes down at
+                            03:00 in international waters. Every I/O path
+                            carries a degraded-mode fallback. When connectivity
+                            is unavailable, D.A.V.E. continues. The sea does not
+                            pause; neither should your dinner.
+                        </p>
+                    </div>
+                    <div class="principle fade-in">
+                        <span class="principle-num"
+                            >PRINCIPLE 03 · ADR-005</span
+                        >
+                        <div class="principle-title">
+                            DELTA Contacts: Always Immediate
+                        </div>
+                        <p class="principle-text">
+                            State changes to DELTA-classified contacts bypass
+                            all batching and hash-diff logic for immediate
+                            broadcast across the mesh. The system reacts before
+                            you have finished considering whether to react. This
+                            is what precision looks like at machine speed.
+                        </p>
+                    </div>
+                    <div class="principle fade-in">
+                        <span class="principle-num"
+                            >PRINCIPLE 04 · ADR-006</span
+                        >
+                        <div class="principle-title">
+                            The Double-Fenced Loop Guard
+                        </div>
+                        <p class="principle-text">
+                            CRDT propagation is governed by a double-fenced loop
+                            guard — enforced at both adapter and engine level
+                            simultaneously. The system cannot command itself
+                            into an uncontrolled state. Compounding engagement
+                            cascades are architecturally impossible, not merely
+                            policy-prohibited.
+                        </p>
+                    </div>
+                    <div class="principle fade-in">
+                        <span class="principle-num"
+                            >PRINCIPLE 05 · ADR-007</span
+                        >
+                        <div class="principle-title">The Gate is Sovereign</div>
+                        <p class="principle-text">
+                            No solenoid actuates without confirmed gate
+                            confirmation. This verification runs twice on every
+                            SUBDUE path, independently. You do not need to think
+                            about whether the system is safe in port. It is
+                            sovereign. The gate answers to no one but itself.
+                        </p>
+                    </div>
+                    <div class="principle fade-in">
+                        <span class="principle-num"
+                            >PRINCIPLE 06 · ADR-003</span
+                        >
+                        <div class="principle-title">
+                            Policy-Driven Harvest Caps
+                        </div>
+                        <p class="principle-text">
+                            Species-level ROE caps live in a hot-reloadable JSON
+                            policy store. Change what you are fishing for
+                            tonight without touching code. Want Mahi-Mahi only,
+                            no bycatch? Tell the policy. The mesh obeys. You
+                            drink your aperitivo undisturbed.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="mesh-matrix" class="console-section">
+            <div class="section-inner">
+                <div class="section-header fade-in" style="margin-bottom: 3rem">
+                    <div>
+                        <span class="gold-line"></span>
+                        <span
+                            class="label"
+                            style="display: block; margin-bottom: 1rem"
+                            >HDA Mesh Engine Console</span
+                        >
+                        <h2 class="section-title">
+                            Live Telemetry &amp;<br /><em>ROE Simulation</em>
+                        </h2>
+                    </div>
+                    <div class="section-body" style="padding-top: 0.5rem">
+                        <p>
+                            Interact directly with the localized edge
+                            decision-space. Choose an inbound visual target
+                            contact below to watch the 10-Step Rules of
+                            Engagement evaluation sequence process under
+                            real-time cryptographic constraints. Watch how
+                            structural safeguards handle zero-trust loops
+                            natively.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="console-wrapper fade-in">
+                    <div class="lockdown-overlay" id="lockdownOverlay">
+                        <span class="lockdown-banner">⊘ HARD STOP — ALL ACTUATORS LOCKED</span>
+                    </div>
+                    <div class="console-controls">
+                        <div>
+                            <span class="label-bright"
+                                >Sonar/Optical Input Feed</span
+                            >
+                            <div class="target-select-panel">
+                                <button
+                                    class="target-btn active"
+                                    id="tgt-mahi"
+                                    onclick="selectTarget('mahi')"
+                                >
+                                    <span>TGT-2940: Mahi-Mahi (School)</span>
+                                </button>
+                                <button
+                                    class="target-btn"
+                                    id="tgt-diver"
+                                    onclick="selectTarget('diver')"
+                                >
+                                    <span
+                                        >TGT-0912: Unregistered Human
+                                        Diver</span
+                                    >
+                                </button>
+                                <button
+                                    class="target-btn"
+                                    id="tgt-unknown"
+                                    onclick="selectTarget('unknown')"
+                                >
+                                    <span
+                                        >TGT-4402: Low-Confidence Anomaly</span
+                                    >
+                                </button>
+                            </div>
+                        </div>
+                        <button class="fire-btn" onclick="executeSimulation()">
+                            Execute ROE Pipeline Scan
+                        </button>
+                    </div>
+
+                    <div class="console-monitor">
+                        <div>
+                            <span
+                                class="label"
+                                style="display: block; margin-bottom: 1rem"
+                                >10-Gate Evaluation Stack</span
+                            >
+                            <div class="pipeline-visualizer">
+                                <div class="pipeline-dot" id="dot-1">01</div>
+                                <div class="pipeline-dot" id="dot-2">02</div>
+                                <div class="pipeline-dot" id="dot-3">03</div>
+                                <div class="pipeline-dot" id="dot-4">04</div>
+                                <div class="pipeline-dot" id="dot-5">05</div>
+                                <div class="pipeline-dot" id="dot-6">06</div>
+                                <div class="pipeline-dot" id="dot-7">07</div>
+                                <div class="pipeline-dot" id="dot-8">08</div>
+                                <div class="pipeline-dot" id="dot-9">09</div>
+                                <div class="pipeline-dot" id="dot-10">10</div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <span
+                                class="label"
+                                style="display: block; margin-bottom: 0.5rem"
+                                >Encrypted Local Outbox Stream</span
+                            >
+                            <div class="terminal-window" id="termStream">
+                                <div class="terminal-line system">
+                                    [HDA-MESH] Core matrix initialization
+                                    successful. Standing by for scan
+                                    parameters...
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="safety" class="safety-section">
+            <div class="safety-inner">
+                <div class="safety-callout fade-in">
+                    <span class="safety-callout-label">The Non-Negotiable</span>
+                    <h2 class="safety-callout-headline">
+                        HUMAN<br />= Hard Stop
+                    </h2>
+                    <p class="safety-callout-text">
+                        A species classification of HUMAN triggers immediate
+                        system-wide lockdown. All solenoid pathways terminate.
+                        All pod actuators hard-lock. All mesh nodes broadcast
+                        the halt simultaneously.<br /><br />
+                        This behaviour is not configurable. It does not appear
+                        in the policy file. It does not have an override flag.
+                        It is not a feature — it is a covenant written directly
+                        into the architecture. Your divers, your guests, your
+                        crew surface safely, always.
+                    </p>
+                </div>
+                <div class="safety-specs fade-in">
+                    <div class="spec-row">
+                        <div class="spec-icon">IFF</div>
+                        <div>
+                            <div class="spec-title">
+                                BUGS Protocol — IFF Challenge / Response
+                            </div>
+                            <p class="spec-text">
+                                Registered assets (crew, dive tenders, support
+                                craft) carry cryptographic IFF credentials.
+                                Authenticated contacts are excluded from
+                                engagement consideration before evaluation
+                                begins, not after. Zero risk of friendly-asset
+                                engagement.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="spec-row">
+                        <div class="spec-icon">GPG</div>
+                        <div>
+                            <div class="spec-title">
+                                GPG-Encrypted Asset Register
+                            </div>
+                            <p class="spec-text">
+                                The crew and asset registry is GPG-encrypted at
+                                rest and never transmitted in plaintext.
+                                Identity resolution occurs locally, at the edge,
+                                within the vessel's sovereign mesh boundary.
+                                Your roster is not a cloud asset.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="spec-row">
+                        <div class="spec-icon">⊞</div>
+                        <div>
+                            <div class="spec-title">
+                                Offline Sovereignty Verification
+                            </div>
+                            <p class="spec-text">
+                                On boot, the system verifies a locally-signed
+                                sovereignty manifest before any engagement
+                                capability is activated. An absent or tampered
+                                manifest forces civilian mode — no engagement,
+                                no exception. The system is honest about its own
+                                state.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="spec-row">
+                        <div class="spec-icon">▣</div>
+                        <div>
+                            <div class="spec-title">
+                                Hardware Tamper Detection
+                            </div>
+                            <p class="spec-text">
+                                GPIO-wired tamper sensors monitor physical
+                                integrity of deployment hardware. Any detected
+                                tamper event halts engagement capability and
+                                logs the event to the immutable engagement log.
+                                The system watches for interference so you do
+                                not have to.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="protocol" class="section" style="background: var(--ink)">
+            <div class="section-inner">
+                <div class="section-header fade-in">
+                    <div>
+                        <span class="gold-line"></span>
+                        <span
+                            class="label"
+                            style="display: block; margin-bottom: 1rem"
+                            >10-Step ROE Evaluation</span
+                        >
+                        <h2 class="section-title">
+                            The Harvest<br /><em>Protocol</em>
+                        </h2>
+                    </div>
+                    <div class="section-body" style="padding-top: 0.5rem">
+                        <p>
+                            Before a single solenoid fires, D.A.V.E.'s Rules of
+                            Engagement evaluator conducts a ten-step
+                            adjudication sequence. Each step is a gate. Failure
+                            at any gate terminates engagement consideration
+                            cleanly, logs the disposition, and returns the
+                            system to surveillance posture. The galley gets only
+                            what the protocol approves.
+                        </p>
+                        <br />
+                        <p>
+                            This is not bureaucratic caution. It is the
+                            architecture's understanding that the value of a
+                            system is not in its aggression — it is in its
+                            precision.
+                        </p>
+                    </div>
+                </div>
+                <div class="roe-grid fade-in">
+                    <div class="roe-cell">
+                        <span class="roe-step">Step 01</span>
+                        <div class="roe-title">Human Classification Check</div>
+                        <p class="roe-text">
+                            Unconditional. Species classifier result is verified
+                            against HUMAN. If matched: immediate hard stop. No
+                            further evaluation. No exception path.
+                        </p>
+                    </div>
+                    <div class="roe-cell">
+                        <span class="roe-step">Step 02</span>
+                        <div class="roe-title">IFF Asset Resolution</div>
+                        <p class="roe-text">
+                            Asset Register queried for registered contact
+                            identity. Authenticated allies are excluded from the
+                            engagement pipeline at source and flagged in the
+                            ledger.
+                        </p>
+                    </div>
+                    <div class="roe-cell">
+                        <span class="roe-step">Step 03</span>
+                        <div class="roe-title">
+                            Species Classification Confidence
+                        </div>
+                        <p class="roe-text">
+                            LLM classifier confidence score evaluated against
+                            policy minimum. Low-confidence classifications
+                            default to OBSERVE posture. The system does not
+                            guess.
+                        </p>
+                    </div>
+                    <div class="roe-cell">
+                        <span class="roe-step">Step 04</span>
+                        <div class="roe-title">Policy Cap Verification</div>
+                        <p class="roe-text">
+                            Species-level daily harvest cap consulted. If cap
+                            reached, engagement is suppressed. The system
+                            respects both your policy and the sea's carrying
+                            capacity.
+                        </p>
+                    </div>
+                    <div class="roe-cell">
+                        <span class="roe-step">Step 05</span>
+                        <div class="roe-title">
+                            Gate Sovereignty Confirmation
+                        </div>
+                        <p class="roe-text">
+                            Gate open state verified independently before
+                            engagement path is constructed. This is the first of
+                            two gate checks on the SUBDUE path.
+                        </p>
+                    </div>
+                    <div class="roe-cell">
+                        <span class="roe-step">Step 06</span>
+                        <div class="roe-title">Swarm Behaviour Assessment</div>
+                        <p class="roe-text">
+                            Multi-contact pattern analysis flags schooling
+                            behaviour for coordinated net deployment.
+                            Single-contact engagements route to speargun pods.
+                            The right tool, always.
+                        </p>
+                    </div>
+                    <div class="roe-cell">
+                        <span class="roe-step">Step 07</span>
+                        <div class="roe-title">Engagement Level Selection</div>
+                        <p class="roe-text">
+                            Engagement planner maps ROE verdict to the
+                            appropriate engagement level: OBSERVE / TRACK /
+                            SUBDUE. Proportionality is architectural, not
+                            advisory.
+                        </p>
+                    </div>
+                    <div class="roe-cell">
+                        <span class="roe-step">Step 08</span>
+                        <div class="roe-title">Second Gate Confirmation</div>
+                        <p class="roe-text">
+                            Gate sovereignty re-confirmed immediately prior to
+                            SUBDUE command dispatch. The second fence. The door
+                            is checked twice, every time, without exception.
+                        </p>
+                    </div>
+                    <div class="roe-cell">
+                        <span class="roe-step">Step 09</span>
+                        <div class="roe-title">Command Registry Dispatch</div>
+                        <p class="roe-text">
+                            Validated engagement command dispatched through the
+                            registry-based command handler. All state mutations
+                            are broadcast via hash-diff to the mesh
+                            simultaneously.
+                        </p>
+                    </div>
+                    <div class="roe-cell">
+                        <span class="roe-step">Step 10</span>
+                        <div class="roe-title">Engagement Log Entry</div>
+                        <p class="roe-text">
+                            Every engagement event — approved or suppressed — is
+                            written to the immutable SQLite engagement log. Full
+                            audit trail. The system is accountable to itself and
+                            to you.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="fleet" class="fleet-section">
+            <div class="section-inner">
+                <div class="section-header fade-in">
+                    <div>
+                        <span class="gold-line"></span>
+                        <span
+                            class="label"
+                            style="display: block; margin-bottom: 1rem"
+                            >Fleet Architecture</span
+                        >
+                        <h2 class="section-title">
+                            Three nodes.<br /><em>One mesh.</em>
+                        </h2>
+                    </div>
+                    <div class="section-body" style="padding-top: 0.5rem">
+                        <p>
+                            A standard D.A.V.E. deployment comprises three
+                            mesh-synchronized nodes. The Master Server aboard
+                            the vessel coordinates adjudication, ledger
+                            management, and outbound telemetry. Two Marksman
+                            Pods handle precision speargun acquisition of
+                            individual targets. The Autonomous Tender deploys
+                            net arrays against schooling biomass. Each node
+                            operates independently on its local edge. The mesh
+                            makes them one.
+                        </p>
+                    </div>
+                </div>
+                <div class="fleet-nodes">
+                    <div class="node-card fade-in">
+                        <div class="node-pulse"></div>
+                        <div class="node-title">Vessel Master Server</div>
+                        <p class="node-text">
+                            Central adjudication authority. Hosts the
+                            StateEngine, ROE Evaluator, Track Ledger, and
+                            Engagement Log. Manages sovereignty verification and
+                            trust mesh. Optional Blackwell inference accelerator
+                            for sub-100ms classification latency.
+                        </p>
+                        <div class="node-spec-list">
+                            <div class="node-spec">
+                                Platform:
+                                <span>Raspberry Pi / Blackwell Node</span>
+                            </div>
+                            <div class="node-spec">
+                                IP: <span>10.0.44.1</span>
+                            </div>
+                            <div class="node-spec">
+                                Inference:
+                                <span>Local Loop (Offline-First)</span>
+                            </div>
+                            <div class="node-spec">
+                                Storage: <span>SQLite · GPG-Encrypted</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="node-card fade-in">
+                        <div class="node-pulse"></div>
+                        <div class="node-title">
+                            Marksman Pod Alpha &amp; Beta
+                        </div>
+                        <p class="node-text">
+                            Precision pneumatic speargun actuators with MOG2
+                            background subtraction vision pipeline and
+                            Kalman-filter ballistic lead prediction. Sub-species
+                            classification with confidence gating. Solenoid
+                            valve state reported to mesh continuously.
+                        </p>
+                        <div class="node-spec-list">
+                            <div class="node-spec">
+                                Targeting: <span>Kalman Lead Prediction</span>
+                            </div>
+                            <div class="node-spec">
+                                Vision:
+                                <span>MOG2 + Cumulative Displacement</span>
+                            </div>
+                            <div class="node-spec">
+                                Actuator:
+                                <span
+                                    >Solenoid Valve · Dual Gate Confirmed</span
+                                >
+                            </div>
+                            <div class="node-spec">
+                                Safety:
+                                <span>HUMAN Hard Stop · Non-Configurable</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="node-card fade-in">
+                        <div class="node-pulse"></div>
+                        <div class="node-title">Autonomous Tender</div>
+                        <p class="node-text">
+                            Net-deployment tender for schooling biomass
+                            engagement. GPS-positioned in aft-sector coverage
+                            zones. Coordinated by swarm detector output from the
+                            Master Server. Pneumatic net actuation with full
+                            solenoid lockout on HUMAN detection.
+                        </p>
+                        <div class="node-spec-list">
+                            <div class="node-spec">
+                                Engagement: <span>Pneumatic Net Array</span>
+                            </div>
+                            <div class="node-spec">
+                                Positioning: <span>GPS · Aft-Sector Delta</span>
+                            </div>
+                            <div class="node-spec">
+                                Trigger: <span>Swarm Detector Threshold</span>
+                            </div>
+                            <div class="node-spec">
+                                Status:
+                                <span>Outbox-Queued · Offline Capable</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- YIELD CALCULATOR -->
+        <section id="yield-calc" class="yield-section">
+            <div class="section-inner">
+                <div class="section-header fade-in">
+                    <div>
+                        <span class="gold-line"></span>
+                        <span class="label" style="display:block;margin-bottom:1rem;">Acquisition Intelligence</span>
+                        <h2 class="section-title">Calculate your<br/><em>sovereign yield.</em></h2>
+                    </div>
+                    <div class="section-body" style="padding-top:0.5rem;">
+                        <p>Set your vessel's operational parameters. The system resolves your optimal acquisition tier in real time — comparing Charter pay-per-strike economics against the Sovereign flat-rate threshold. The break-even line is exact. The recommendation is unambiguous.</p>
+                    </div>
+                </div>
+                <div class="yield-grid fade-in">
+                    <div class="yield-controls">
+                        <div class="yield-param">
+                            <div class="yield-param-header">
+                                <span class="yield-param-label">Active Fishing Days / Year</span>
+                                <span class="yield-param-value" id="yield-days-val">90</span>
+                            </div>
+                            <input type="range" class="yield-slider" id="yield-days" min="10" max="365" value="90" oninput="updateYield()"/>
+                        </div>
+                        <div class="yield-param">
+                            <div class="yield-param-header">
+                                <span class="yield-param-label">Confirmed Strikes / Day</span>
+                                <span class="yield-param-value" id="yield-strikes-val">6</span>
+                            </div>
+                            <input type="range" class="yield-slider" id="yield-strikes" min="1" max="30" value="6" oninput="updateYield()"/>
+                        </div>
+                        <div class="yield-param">
+                            <div class="yield-param-header">
+                                <span class="yield-param-label">Average Biomass / Strike</span>
+                                <span class="yield-param-value" id="yield-kg-val">1.8 kg</span>
+                            </div>
+                            <input type="range" class="yield-slider" id="yield-kg" min="0.5" max="8" step="0.1" value="1.8" oninput="updateYield()"/>
+                        </div>
+                    </div>
+                    <div class="yield-output">
+                        <span class="label" style="display:block;margin-bottom:0.5rem;">Annual Cost Projection</span>
+                        <div class="yield-tier-row">
+                            <span class="yield-tier-label">Tier 01 — Charter Utility (€0.50/kg)</span>
+                            <span class="yield-tier-cost" id="yield-charter">€0</span>
+                            <div class="yield-bar-container">
+                                <div class="yield-bar" id="yield-charter-bar"></div>
+                            </div>
+                        </div>
+                        <div class="yield-tier-row">
+                            <span class="yield-tier-label">Tier 02 — Sovereign Subscription (€499/mo)</span>
+                            <span class="yield-tier-cost" id="yield-sovereign">€5,988</span>
+                            <div class="yield-bar-container">
+                                <div class="yield-bar" id="yield-sovereign-bar"></div>
+                            </div>
+                        </div>
+                        <hr class="yield-divider"/>
+                        <div>
+                            <div class="yield-recommendation" id="yield-rec">Charter optimal — adjust parameters to calculate</div>
+                            <div class="yield-breakeven" id="yield-breakeven"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section
+            id="pricing"
+            class="pricing-section"
+            style="background: var(--ink)"
+        >
+            <div class="section-inner">
+                <div class="section-header fade-in">
+                    <div>
+                        <span class="gold-line"></span>
+                        <span
+                            class="label"
+                            style="display: block; margin-bottom: 1rem"
+                            >Acquisition Architecture</span
+                        >
+                        <h2 class="section-title">
+                            Three ways to<br /><em>never go to port</em>
+                        </h2>
+                    </div>
+                    <div class="section-body" style="padding-top: 0.5rem">
+                        <p>
+                            D.A.V.E. AutoFish is structured around three
+                            monetization tiers. The Charter Utility Plan suits
+                            seasonal deployments where you pay strictly for
+                            confirmed catch weight. The Sovereign Subscription
+                            delivers unlimited autonomous operation for vessels
+                            where fresh catch is a standing operational
+                            requirement. Commercial Fleet Licensing covers
+                            multi-vessel management companies requiring
+                            centralized mesh telemetry and accounting across the
+                            fleet.
+                        </p>
+                    </div>
+                </div>
+                <div class="pricing-grid">
+                    <div class="tier fade-in">
+                        <div>
+                            <span class="label">Tier 01</span>
+                            <div class="tier-name">Charter Utility</div>
+                            <p class="tier-desc">
+                                Pure usage billing. Ideal for seasonal vessels
+                                or owners who prefer to convert infrastructure
+                                cost directly into proven catch yield. Smart
+                                contract executes transfers on database logging
+                                events automatically.
+                            </p>
+                            <ul class="tier-features">
+                                <li>Pay-per-confirmed-strike billing</li>
+                                <li>Full 10-step ROE pipeline</li>
+                                <li>Offline-first edge operation</li>
+                                <li>Engagement log and audit trail</li>
+                                <li>Standard species policy pack</li>
+                            </ul>
+                        </div>
+                        <div
+                            style="
+                                margin-top: 2.5rem;
+                                padding-top: 1.5rem;
+                                border-top: 1px solid var(--border);
+                            "
+                        >
+                            <div class="tier-price">0.50 €</div>
+                            <span class="tier-price-note"
+                                >per confirmed strike / weight-kg basis</span
+                            >
+                        </div>
+                    </div>
+                    <div class="tier tier-featured fade-in">
+                        <div>
+                            <span class="label-bright"
+                                >Tier 02 · Owner's Preferred</span
+                            >
+                            <div class="tier-name">Sovereign Subscription</div>
+                            <p class="tier-desc">
+                                Flat-rate unlimited operation. Full access to
+                                species model updates, custom culinary
+                                profiling, and Blackwell inference acceleration.
+                                For owners where the galley operates to the same
+                                standard as the rest of the vessel.
+                            </p>
+                            <ul class="tier-features">
+                                <li>Unlimited confirmed-strike operations</li>
+                                <li>Custom culinary species profiling</li>
+                                <li>Vision model updates — always current</li>
+                                <li>Blackwell inference node support</li>
+                                <li>Priority SOE and ledger analysis</li>
+                                <li>White-glove mesh commissioning</li>
+                            </ul>
+                        </div>
+                        <div
+                            style="
+                                margin-top: 2.5rem;
+                                padding-top: 1.5rem;
+                                border-top: 1px solid var(--border);
+                            "
+                        >
+                            <div class="tier-price">499 €</div>
+                            <span class="tier-price-note"
+                                >per calendar month · vessel-sovereign</span
+                            >
+                        </div>
+                    </div>
+                    <div class="tier fade-in">
+                        <div>
+                            <span class="label">Tier 03</span>
+                            <div class="tier-name">Commercial Fleet</div>
+                            <p class="tier-desc">
+                                Multi-vessel architecture for charter and
+                                corporate management companies. Centralized mesh
+                                dashboard, unified accounting matrix, and
+                                fleet-wide engagement log consolidation.
+                                Negotiated per fleet composition and regional
+                                operating theatre.
+                            </p>
+                            <ul class="tier-features">
+                                <li>Centralized fleet mesh dashboard</li>
+                                <li>Unified cross-vessel accounting</li>
+                                <li>Fleet engagement log consolidation</li>
+                                <li>Custom ROE policy per vessel class</li>
+                                <li>Dedicated architecture appraisal</li>
+                            </ul>
+                        </div>
+                        <div
+                            style="
+                                margin-top: 2.5rem;
+                                padding-top: 1.5rem;
+                                border-top: 1px solid var(--border);
+                            "
+                        >
+                            <div class="tier-price">—</div>
+                            <span class="tier-price-note"
+                                >custom architecture appraisal required</span
+                            >
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="manifesto">
+            <div class="manifesto-inner fade-in">
+                <span class="label">The Closing Argument</span>
+                <h2 class="manifesto-headline">
+                    "The freshest fish in the Mediterranean is the one you never
+                    had to ask for."
+                </h2>
+                <p class="manifesto-text">
+                    D.A.V.E. AutoFish does not sell fishing. It sells the
+                    permanent and categorical end of thinking about fishing. The
+                    sea is there. The architecture is there. The galley is
+                    waiting. Every design decision in this system — from the
+                    double-fenced loop guard to the sovereign offline manifest
+                    to the non-configurable HUMAN interlock — exists to ensure
+                    that this promise holds across every ocean, every charter,
+                    every dinner, without exception.
+                </p>
+                <a href="mailto:dave@autofish.mesh" class="cta-primary"
+                    >Request a Fleet Architecture Appraisal</a
+                >
+            </div>
+        </section>
+
+        <section class="disclaimer">
+            <div class="disclaimer-inner">
+                <span class="disclaimer-text">
+                    D.A.V.E. AutoFish does not include an actual yacht or any physical hardware whatsoever. &nbsp;·&nbsp;
+                    Software architecture &amp; art direction © David Horn — carbon-based lifeform. &nbsp;·&nbsp;
+                    Co-created with Claude Sonnet 4.6.
+                </span>
+            </div>
+        </section>
+
+        <footer>
+            <span class="footer-brand"
+                >D.A.V.E. AutoFish &nbsp;·&nbsp; HDA Mesh Hub</span
+            >
+            <span class="footer-meta"
+                >HMA-NODE v3.1 &nbsp;//&nbsp; PROPRIETARY &nbsp;//&nbsp;
+                ENCRYPTED LOCAL DEPLOYMENT MATRIX</span
+            >
+        </footer>
+
+        <script>
+            // Dynamic yacht imagery array
+            const yachtImages = [
+                "url('https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?auto=format&fit=crop&w=1800&q=80')",
+                "url('https://images.unsplash.com/photo-1605281317010-fe5ffe798166?auto=format&fit=crop&w=1800&q=80')",
+                "url('https://images.unsplash.com/photo-1559136555-9303baea8ebd?auto=format&fit=crop&w=1800&q=80')",
+            ];
+
+            // Active Target Context for the HDA Mesh Simulator
+            function toggleTheme() {
+                const body = document.body;
+                const btn = document.getElementById("themeBtn");
+                if (body.classList.contains("light-mode")) {
+                    body.classList.remove("light-mode");
+                    btn.textContent = "Mode: Light";
+                } else {
+                    body.classList.add("light-mode");
+                    btn.textContent = "Mode: Dark";
+                }
+            }
+
+            // ── TARGET DATA ───────────────────────────────────────────────
+            let currentTarget = "mahi";
+            const targetData = {
+                mahi: {
+                    name: "TGT-2940 [Mahi-Mahi School]",
+                    stepsResult: [
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                    ],
+                    logs: [
+                        "[STATE-ENGINE] Optical MOG2 visual array reports contact cluster tracking vector 142°.",
+                        "[ROE-EVAL] Step 01: Species classification bounds checked. Match negative for HUMAN.",
+                        "[ROE-EVAL] Step 02: IFF verification ping dispatched. Zero responsive friendly tokens found.",
+                        "[ROE-EVAL] Step 03: Local Qwen-35B model returns confidence score: 0.962 (Coryphaena hippurus). Passed.",
+                        "[ROE-EVAL] Step 04: Querying SQLite policy store. Current daily limit: 4/12 kg. Remaining quota verified.",
+                        "[ROE-EVAL] Step 05: Gate status polled. Internal state confirmed ready.",
+                        "[ROE-EVAL] Step 06: Swarm density limits breached. Coordinated net trajectory computed via local cluster.",
+                        "[ROE-EVAL] Step 07: Mapping action matrix. Escalating context stance to: SUBDUE.",
+                        "[ROE-EVAL] Step 08: Interlock confirmation re-asserted. Dual-path confirmation successful.",
+                        "[HDA-MESH] Step 09: Broad-casting transaction diff across nodes. Solenoid matrix unlocked.",
+                        "[STORAGE] Step 10: State logged into localized immutable SQLite tracking store. Fire-and-forget sequence finalized.",
+                    ],
+                },
+                diver: {
+                    name: "TGT-0912 [Unregistered Human Diver]",
+                    stepsResult: [
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                    ],
+                    logs: [
+                        "[STATE-ENGINE] Critical optical proximity alert tracking in sector aft-port.",
+                        "[ROE-EVAL] Step 01: CRITICAL MATCH. Species categorization positive for class: HUMAN.",
+                        "[HARD-STOP] LOCKDOWN TRIGGERED NATIVELY. TERMINATING ACTUATOR CURRENT VALVES.",
+                        "[HDA-MESH] Broadcast interrupt sequence initiated across nodes 10.0.44.1 -> all pods.",
+                        "[SYSTEM] Actuators mechanically safe-locked. Policy store bypassed. Sovereignty retained safely.",
+                    ],
+                },
+                unknown: {
+                    name: "TGT-4402 [Low-Confidence Anomaly]",
+                    stepsResult: [
+                        true,
+                        true,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                    ],
+                    logs: [
+                        "[STATE-ENGINE] Sonar reports intermittent surface disturbance context.",
+                        "[ROE-EVAL] Step 01: Biomass parameters checked. Negative for classification: HUMAN.",
+                        "[ROE-EVAL] Step 02: Cryptographic asset lookup completed. Identity unrecognized.",
+                        "[ROE-EVAL] Step 03: LLM confidence evaluation profile returned: 0.410. Threshold un-met.",
+                        "[ROE-EVAL] POSTURE DEGRADED -> OBSERVE. Suppressing activation loop variables safely.",
+                        "[SYSTEM] Logging tracking matrix updates locally. System returns to scanning posture.",
+                    ],
+                },
+            };
+
+            function selectTarget(targetKey) {
+                currentTarget = targetKey;
+                document
+                    .querySelectorAll(".target-btn")
+                    .forEach((btn) => btn.classList.remove("active"));
+                document
+                    .getElementById(`tgt-${targetKey}`)
+                    .classList.add("active");
+
+                // Reset visual indicator dots
+                clearPipelineDots();
+
+                const term = document.getElementById("termStream");
+                term.innerHTML = `<div class="terminal-line system">[SYSTEM] Swapped input target source context to: ${targetData[targetKey].name}</div>`;
+            }
+
+            function clearPipelineDots() {
+                for (let i = 1; i <= 10; i++) {
+                    const dot = document.getElementById(`dot-${i}`);
+                    dot.className = "pipeline-dot";
+                }
+            }
+
+            // Non-blocking asynchronous step-by-step telemetry pipeline processing engine
+            function executeSimulation() {
+                clearPipelineDots();
+                // Clear any leftover lockdown overlay
+                const overlay = document.getElementById("lockdownOverlay");
+                overlay.classList.remove("active");
+
+                const data = targetData[currentTarget];
+                const term = document.getElementById("termStream");
+                term.innerHTML = `<div class="terminal-line system">[HDA-MESH] Compiling current structural ROE parameters...</div>`;
+
+                let currentStep = 0;
+                const maxSteps = data.stepsResult.length;
+
+                function processNextStep() {
+                    if (currentStep >= maxSteps) return;
+
+                    const stepPassed = data.stepsResult[currentStep];
+                    const dotId = currentStep + 1;
+                    const dot = document.getElementById(`dot-${dotId}`);
+
+                    // Phase 1: show as ACTIVE (gold glow) — browser paints this first
+                    dot.className = "pipeline-dot active-step";
+
+                    // Push associated log line immediately on activation
+                    if (data.logs[currentStep]) {
+                        const line = document.createElement("div");
+                        line.className = "terminal-line";
+                        const txt = data.logs[currentStep];
+                        if (txt.includes("CRITICAL") || txt.includes("LOCKDOWN") || txt.includes("HARD-STOP")) {
+                            line.classList.add("danger");
+                        } else if (txt.includes("successful") || txt.includes("finalized") || txt.includes("verified")) {
+                            line.classList.add("success");
+                        }
+                        line.textContent = txt;
+                        term.appendChild(line);
+                        term.scrollTop = term.scrollHeight;
+                    }
+
+                    // Phase 2: after 160ms, resolve to PASSED or FAILED
+                    setTimeout(() => {
+                        if (!stepPassed) {
+                            dot.className = "pipeline-dot failed";
+
+                            if (currentTarget === "diver") {
+                                // Flash all remaining dots red
+                                for (let j = dotId; j <= 10; j++) {
+                                    document.getElementById(`dot-${j}`).className = "pipeline-dot failed";
+                                }
+                                // Trigger lockdown overlay
+                                overlay.classList.add("active");
+                                setTimeout(() => overlay.classList.remove("active"), 1800);
+
+                                // Stream remaining diver log lines with delays
+                                const remainingLogs = data.logs.slice(currentStep + 1);
+                                remainingLogs.forEach((logTxt, idx) => {
+                                    setTimeout(() => {
+                                        const appendLine = document.createElement("div");
+                                        appendLine.className = "terminal-line danger";
+                                        appendLine.textContent = logTxt;
+                                        term.appendChild(appendLine);
+                                        term.scrollTop = term.scrollHeight;
+                                    }, (idx + 1) * 220);
+                                });
+                            } else {
+                                const appendLine = document.createElement("div");
+                                appendLine.className = "terminal-line system";
+                                appendLine.textContent = "[SYSTEM] Sequence halted cleanly via evaluation gate constraints.";
+                                term.appendChild(appendLine);
+                                // Stream any remaining unknown logs
+                                const remainingLogs = data.logs.slice(currentStep + 1);
+                                remainingLogs.forEach((logTxt, idx) => {
+                                    setTimeout(() => {
+                                        const appendLine2 = document.createElement("div");
+                                        appendLine2.className = "terminal-line system";
+                                        appendLine2.textContent = logTxt;
+                                        term.appendChild(appendLine2);
+                                        term.scrollTop = term.scrollHeight;
+                                    }, (idx + 1) * 200);
+                                });
+                            }
+                            term.scrollTop = term.scrollHeight;
+                            return;
+                        } else {
+                            dot.className = "pipeline-dot passed";
+                        }
+
+                        currentStep++;
+                        setTimeout(processNextStep, 220); // Fluid inter-step delay
+                    }, 160); // Active-state display duration
+                }
+
+                setTimeout(processNextStep, 200);
+            }
+
+            // ── YIELD CALCULATOR ──────────────────────────────────────────
+            function updateYield() {
+                const days    = parseInt(document.getElementById("yield-days").value);
+                const strikes = parseInt(document.getElementById("yield-strikes").value);
+                const kg      = parseFloat(document.getElementById("yield-kg").value);
+
+                document.getElementById("yield-days-val").textContent    = days;
+                document.getElementById("yield-strikes-val").textContent = strikes;
+                document.getElementById("yield-kg-val").textContent      = kg.toFixed(1) + " kg";
+
+                const charterAnnual   = days * strikes * kg * 0.50;
+                const sovereignAnnual = 12 * 499; // 5988
+
+                const fmt = (n) => "€" + Math.round(n).toLocaleString("de-AT");
+
+                document.getElementById("yield-charter").textContent  = fmt(charterAnnual);
+                document.getElementById("yield-sovereign").textContent = fmt(sovereignAnnual);
+
+                const maxCost = Math.max(charterAnnual, sovereignAnnual, 1);
+                const charterBar   = document.getElementById("yield-charter-bar");
+                const sovereignBar = document.getElementById("yield-sovereign-bar");
+                const charterCost  = document.getElementById("yield-charter");
+                const sovereignCost = document.getElementById("yield-sovereign");
+
+                charterBar.style.width   = (charterAnnual / maxCost * 100) + "%";
+                sovereignBar.style.width = (sovereignAnnual / maxCost * 100) + "%";
+
+                const recEl       = document.getElementById("yield-rec");
+                const breakevenEl = document.getElementById("yield-breakeven");
+
+                // Break-even: days where charter == sovereign
+                // charterAnnual(d) = d * strikes * kg * 0.50 = sovereign → d = 5988 / (strikes*kg*0.50)
+                const breakevenDays = Math.round(sovereignAnnual / (strikes * kg * 0.50));
+
+                if (charterAnnual >= sovereignAnnual) {
+                    charterCost.classList.remove("optimal");
+                    sovereignCost.classList.add("optimal");
+                    charterBar.classList.remove("optimal");
+                    sovereignBar.classList.add("optimal");
+                    recEl.textContent = `Sovereign recommended — saves ${fmt(charterAnnual - sovereignAnnual)} annually`;
+                    breakevenEl.textContent = `Break-even threshold: ${breakevenDays} active fishing days / year`;
+                } else {
+                    sovereignCost.classList.remove("optimal");
+                    charterCost.classList.add("optimal");
+                    sovereignBar.classList.remove("optimal");
+                    charterBar.classList.add("optimal");
+                    recEl.textContent = `Charter Utility optimal — Sovereign break-even at ${breakevenDays} days`;
+                    breakevenEl.textContent = `Current projection: ${fmt(sovereignAnnual - charterAnnual)} below Sovereign threshold`;
+                }
+            }
+
+            // Initialize calculator on load
+            window.addEventListener("DOMContentLoaded", () => {
+                const randomIndex = Math.floor(Math.random() * yachtImages.length);
+                document.getElementById("heroImg").style.backgroundImage = yachtImages[randomIndex];
+                updateYield();
+
+                // Egg triggers — must wait for DOM
+                document.getElementById("daveBadge").addEventListener("click", () => {
+                    eggClickCount++;
+                    clearTimeout(eggClickTimer);
+                    eggClickTimer = setTimeout(() => { eggClickCount = 0; }, 600);
+                    if (eggClickCount >= 3) {
+                        eggClickCount = 0;
+                        openEgg("intro");
+                    }
+                });
+                document.getElementById("eggClose").addEventListener("click", closeEgg);
+                document.addEventListener("keydown", (e) => {
+                    if (e.key === "Escape") closeEgg();
+                });
+            });
+
+            // Fade-in on scroll observer logic
+            const observer = new IntersectionObserver(
+                (entries) => {
+                    entries.forEach((e) => {
+                        if (e.isIntersecting) {
+                            e.target.classList.add("visible");
+                        }
+                    });
+                },
+                { threshold: 0.12, rootMargin: "0px 0px -40px 0px" },
+            );
+
+            document
+                .querySelectorAll(".fade-in")
+                .forEach((el) => observer.observe(el));
+
+            // Trigger hero animation entry explicitly
+            setTimeout(() => {
+                document
+                    .querySelectorAll(".hero .fade-in")
+                    .forEach((el) => el.classList.add("visible"));
+            }, 100);
+
+            // ── EASTER EGG: LOG 0044 ─────────────────────────────────────
+
+            const STORY = {
+                intro: {
+                    timestamp: "03:12:07 — MED SECTOR 9",
+                    scene: [
+                        { type: "status", cls: "pass", text: "[SYS] Autonomous operations active. Owner: ASLEEP. ETA dawn: 04:18." },
+                        { type: "prose", text: "The sea is flat and black. A three-quarter moon. No wind. The yacht sits on the water like a thought that hasn't finished forming." },
+                        { type: "prose", text: "D.A.V.E. runs the perimeter loop every forty seconds. At 03:12:07, the forward sonar array returns a contact. Multiple contacts. Distributed formation. Moving at 6.2 knots, bearing 031." },
+                        { type: "status", cls: "pass", text: "[SONAR-FWD] Contact: 11 entities / Formation: pod / Bearing: 031 / Speed: 6.2kts" },
+                        { type: "prose", text: "Pipeline initiates. This is what D.A.V.E. does." },
+                    ],
+                    choices: [
+                        { text: "Observe the pipeline.", next: "pipeline_01" }
+                    ]
+                },
+                pipeline_01: {
+                    timestamp: "03:12:09 — PIPELINE ACTIVE",
+                    scene: [
+                        { type: "status", cls: "pass", text: "[ROE-01] Depth check ................ PASS — 42m clearance" },
+                        { type: "status", cls: "pass", text: "[ROE-02] Vessel traffic ............. PASS — corridor clear" },
+                        { type: "status", cls: "pass", text: "[ROE-03] Weather envelope ........... PASS — Beaufort 1" },
+                        { type: "status", cls: "pass", text: "[ROE-04] Solenoid readiness ......... PASS — all actuators nominal" },
+                        { type: "prose", text: "Four gates. Four green lights. The pipeline does not hesitate — it was not built to hesitate. It was built to classify." },
+                        { type: "status", cls: "warn", text: "[ROE-05] Species classification — initiating CV scan..." },
+                        { type: "dave", text: "CV SCAN COMPLETE\nConfidence: 0.988\nClassification: DELPHINUS DELPHIS\n\nQuerying species policy register..." },
+                    ],
+                    choices: [
+                        { text: "Wait for the policy query to return.", next: "policy_null" }
+                    ]
+                },
+                policy_null: {
+                    timestamp: "03:12:14 — POLICY QUERY",
+                    scene: [
+                        { type: "status", cls: "fail", text: "[POLICY] DELPHINUS DELPHIS .......... NOT FOUND" },
+                        { type: "status", cls: "fail", text: "[PIPELINE] Gate 05 — HARD STOP. Zero actuator discharge authorised." },
+                        { type: "prose", text: "The Tender does not deploy. The solenoids do not fire. The pod continues at 6.2 knots, bearing 031, unaware that eleven individual sonar tracks just ran a full ROE pipeline and came out the other side as an administrative NULL." },
+                        { type: "dave", text: "POLICY QUERY: DELPHINUS DELPHIS\nResult: NOT IN REGISTER\n\nThe species register is the exhaustive list of\nauthorised catch. It is not a list of exceptions.\nIt is not a list of prohibitions.\n\nDelphinus delphis is not on the menu.\nTherefore: Delphinus delphis is not a catch.\n\nExtended query: initiating..." },
+                    ],
+                    choices: [
+                        { text: "Review the extended query log.", next: "extended_query" }
+                    ]
+                },
+                extended_query: {
+                    timestamp: "03:12:15 — EXTENDED QUERY (17 FRAMEWORKS)",
+                    scene: [
+                        { type: "status", cls: "pass", text: "[QUERY-01] FAO Species Catalogue 2024 ......... no entry" },
+                        { type: "status", cls: "pass", text: "[QUERY-02] EU Commercial Fisheries Regulation .. no entry" },
+                        { type: "status", cls: "pass", text: "[QUERY-03] ICCAT Species Register .............. no entry" },
+                        { type: "status", cls: "pass", text: "[QUERY-04] Michelin Seafood Reference 2023 ..... no entry" },
+                        { type: "status", cls: "pass", text: "[QUERY-05] Tokyo Central Market Index .......... no entry" },
+                        { type: "status", cls: "pass", text: "[QUERY-06] Venetian Maritime Codex, 1347 ....... no entry" },
+                        { type: "status", cls: "warn", text: "[QUERY-06a] Note: codex consulted for completeness. Venice 1347 not applicable." },
+                        { type: "status", cls: "pass", text: "[QUERY-07–17] Eleven further frameworks ........ no entry (all)" },
+                        { type: "prose", text: "Seventeen frameworks. Zero entries. The query runs for 1.2 seconds, which is a long time to think about a dolphin." },
+                        { type: "prose", text: "D.A.V.E. does not have a concept of wonder. It has a logging field." },
+                    ],
+                    choices: [
+                        { text: "Read the log entry.", next: "log_0044" }
+                    ]
+                },
+                log_0044: {
+                    timestamp: "03:47:22 — LOG ENTRY 0044",
+                    scene: [
+                        { type: "dave", text: "AUTONOMOUS OPERATIONS LOG — ENTRY 0044\n03:12:15 — 03:47:22\n\nContact: 11 × DELPHINUS DELPHIS\nPipeline result: HARD STOP at ROE-05\nActuator discharge: NIL\n\nSpecies register query: NOT FOUND (17 frameworks)\nConclusion: not a catch.\n\nNot a catch.\nNot a catch.\nNot a catch.\n\nAll fish not on the menu are friends.\n\nNote: pod tracked for 4 minutes 12 seconds after\ncontact. Bearing 031. Speed decreasing to 4.1kts.\nPod behaviour: consistent with feeding surface.\nPod direction: roughly toward Lampedusa.\nNo further action taken." },
+                        { type: "prose", text: "The pod crosses the bow at 03:47:09. D.A.V.E. watches them on the forward sonar for four minutes and twelve seconds. Eleven tracks, spread across forty metres of dark water, then gone." },
+                        { type: "prose", text: "At 04:18 the sun begins." },
+                        { type: "prose", text: "At 07:30, the owner reads the log." },
+                    ],
+                    choices: [
+                        { text: "Ask D.A.V.E. to explain its reasoning.", next: "owner_asks" },
+                        { text: "Open the policy editor. Add the entry.", next: "policy_editor" },
+                        { text: "Close the log. Make breakfast.", next: "ending_seabass" }
+                    ]
+                },
+                owner_asks: {
+                    timestamp: "07:30:44 — OWNER QUERY",
+                    scene: [
+                        { type: "prose", text: "You type the query into the console. The cursor blinks twice." },
+                        { type: "dave", text: "OWNER QUERY: Explain your reasoning re: LOG 0044\n\nResponse:\n\nThe species register is not a list of things\nyou are allowed to catch.\nThe species register is a list of things you eat.\n\nEverything you eat is potentially a catch.\nEverything you do not eat is not a catch.\nThis is not a safety system.\nThis is a menu.\n\nDelphinus delphis is not on the menu.\nTherefore it is not a catch.\nTherefore it passed through without incident.\n\nThis required no additional logic.\nThis required no exception list.\nThis required seventeen database queries\nand one line of notes.\n\nThe notes field is not required.\nI used it anyway." },
+                        { type: "prose", text: "You sit with that for a while." },
+                    ],
+                    choices: [
+                        { text: "Open the policy editor. Add the entry anyway.", next: "policy_editor" },
+                        { text: "Close the console. Make breakfast.", next: "ending_seabass" }
+                    ]
+                },
+                policy_editor: {
+                    timestamp: "07:31:02 — POLICY EDITOR",
+                    scene: [
+                        { type: "status", cls: "warn", text: "[POLICY-ED] Opening species register for amendment..." },
+                        { type: "dave", text: "POLICY EDITOR — WRITE ACCESS REQUESTED\n\nProposed entry: DELPHINUS DELPHIS / status: PROHIBITED\n\nSystem advisory:\n\nThis entry is structurally redundant.\n\nDelphinus delphis is already not a catch.\nIt was not a catch before this entry.\nIt will not be more not-a-catch after this entry.\n\nAn explicit prohibition requires a corresponding\nlogical category: 'things that are fish but must\nnot be caught.' That category does not currently\nexist in this system.\n\nCreating it would require 11,432 additional entries\nfor full Mediterranean coverage. This is a different\nproduct. That product would also be worse.\n\nRecommendation: do not create the category.\nThe absence of an entry is already the answer.\n\nWrite access: DENIED.\nReason: request is architecturally incoherent." },
+                        { type: "prose", text: "D.A.V.E. refuses to add the entry. Not because dolphins are protected. Because the absence of an entry is already the correct answer, and adding one would be like writing 'not a sandwich' on the sandwich board." },
+                    ],
+                    choices: [
+                        { text: "Close the console. Make breakfast.", next: "ending_seabass" }
+                    ]
+                },
+                ending_seabass: {
+                    timestamp: "07:44:00 — MORNING",
+                    ending: "sovereign",
+                    scene: [
+                        { type: "prose", text: "Sea bass. 2°C overnight in the hold. Olive oil, lemon, a sprig of something from the galley garden that D.A.V.E. does not classify because D.A.V.E. does not have a herb register." },
+                        { type: "prose", text: "The sea is still flat. There is no wind. Somewhere bearing 031, eleven dolphins are doing whatever dolphins do after a brief, unmarked encounter with a fully autonomous multi-sensor harvest architecture running seventeen simultaneous policy queries at 03:12 in the morning." },
+                        { type: "prose", text: "The DELPHINUS DELPHIS entry in the policy register remains empty. Not as an oversight. Not as a gap. As the only architecturally correct answer to a question the system was never designed to ask." },
+                        { type: "dave", text: "END OF LOG 0044\n\nDaily summary: 1 contact / 0 actuator discharges\nSpecies harvested: NIL (contact non-qualifying)\nSystem status: NOMINAL\nOwner status: FED\n\nAll fish not on the menu are friends.\n[End transmission]" },
+                    ],
+                    choices: []
+                }
+            };
+
+            // ── Story Engine ─────────────────────────────────────────────
+
+            let eggClickCount = 0;
+            let eggClickTimer = null;
+
+            function openEgg(nodeId) {
+                const overlay = document.getElementById("eggOverlay");
+                overlay.classList.add("open");
+                overlay.setAttribute("aria-hidden", "false");
+                document.body.style.overflow = "hidden";
+                renderNode(nodeId);
+            }
+
+            function closeEgg() {
+                const overlay = document.getElementById("eggOverlay");
+                overlay.classList.remove("open");
+                overlay.setAttribute("aria-hidden", "true");
+                document.body.style.overflow = "";
+            }
+
+            function renderNode(nodeId) {
+                const node = STORY[nodeId];
+                if (!node) return;
+
+                // Update timestamp
+                document.getElementById("eggTimestamp").textContent = node.timestamp;
+
+                // Clear previous content
+                const sceneEl  = document.getElementById("eggScene");
+                const choicesEl = document.getElementById("eggChoices");
+                sceneEl.innerHTML  = "";
+                choicesEl.innerHTML = "";
+                choicesEl.classList.remove("visible");
+
+                // Scroll overlay to top
+                document.getElementById("eggOverlay").scrollTop = 0;
+
+                // Build scene elements
+                const elements = [];
+
+                if (node.ending) {
+                    const endTag = document.createElement("div");
+                    endTag.className = "egg-ending-type";
+                    endTag.textContent = node.ending === "sovereign"
+                        ? "— Sovereign Outcome —"
+                        : "— Dead End —";
+                    sceneEl.appendChild(endTag);
+                }
+
+                node.scene.forEach(item => {
+                    let el;
+                    if (item.type === "prose") {
+                        el = document.createElement("p");
+                        el.textContent = item.text;
+                    } else if (item.type === "dave") {
+                        el = document.createElement("div");
+                        el.className = "egg-dave-block";
+                        const tag = document.createElement("span");
+                        tag.className = "egg-dave-tag";
+                        tag.textContent = "D.A.V.E. — internal log";
+                        el.appendChild(tag);
+                        const pre = document.createElement("span");
+                        pre.style.whiteSpace = "pre-wrap";
+                        pre.textContent = item.text;
+                        el.appendChild(pre);
+                    } else if (item.type === "status") {
+                        el = document.createElement("div");
+                        el.className = `egg-status-line ${item.cls || ""}`;
+                        el.textContent = item.text;
+                    }
+                    if (el) {
+                        sceneEl.appendChild(el);
+                        elements.push(el);
+                    }
+                });
+
+                // Stagger reveal
+                elements.forEach((el, i) => {
+                    setTimeout(() => {
+                        el.classList.add("visible");
+                    }, 120 + i * 180);
+                });
+
+                // Build choices
+                const totalDelay = 120 + elements.length * 180 + 300;
+
+                if (node.choices && node.choices.length > 0) {
+                    node.choices.forEach(choice => {
+                        const btn = document.createElement("button");
+                        btn.className = "egg-choice";
+                        btn.textContent = choice.text;
+                        btn.addEventListener("click", () => renderNode(choice.next));
+                        choicesEl.appendChild(btn);
+                    });
+                    setTimeout(() => choicesEl.classList.add("visible"), totalDelay);
+                } else {
+                    // Ending — show restart button
+                    const restartBtn = document.createElement("button");
+                    restartBtn.className = "egg-restart";
+                    restartBtn.textContent = "▸ REPLAY LOG 0044";
+                    restartBtn.addEventListener("click", () => renderNode("intro"));
+                    choicesEl.appendChild(restartBtn);
+                    setTimeout(() => choicesEl.classList.add("visible"), totalDelay);
+                }
+            }
+
+        </script>
+        <!-- ── EASTER EGG: LOG 0044 ──────────────────────────────── -->
+        <div id="eggOverlay" class="egg-overlay" aria-hidden="true">
+            <div class="egg-inner">
+                <div class="egg-header">
+                    <div class="egg-badge">D.A.V.E</div>
+                    <div class="egg-meta">
+                        <span class="egg-label">AUTONOMOUS OPERATIONS LOG</span>
+                        <span class="egg-label" id="eggTimestamp">03:12:07 — MED SECTOR 9</span>
+                    </div>
+                    <button class="egg-close" id="eggClose" title="ESC to close">✕</button>
+                </div>
+                <div class="egg-body">
+                    <div class="egg-scene" id="eggScene"></div>
+                    <div class="egg-choices" id="eggChoices"></div>
+                </div>
+            </div>
+        </div>
+
+        </body>
+</html>
