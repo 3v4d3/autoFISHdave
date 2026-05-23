@@ -1,0 +1,641 @@
+@import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap");
+
+:root {
+    --bg-primary: #060b0f;
+    --bg-secondary: #0d1520;
+    --bg-tertiary: #141e2b;
+    --border-color: #1e2d3d;
+    --text-main: #b8cdd9;
+    --text-muted: #5a7a8a;
+
+    /* Acoustic spectrum - cyan-green, not github blue */
+    --accent-blue: #00b8d4;
+    --accent-cyan: #00e5c0;
+    --accent-green: #1a7a3a;
+    --accent-green-glow: rgba(26, 122, 58, 0.4);
+    --accent-red: #c0392b;
+    --accent-red-glow: rgba(192, 57, 43, 0.4);
+    --accent-yellow: #c8971a;
+    --accent-purple: #8a6adf;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--bg-primary);
+    color: var(--text-main);
+    font-family: "Share Tech Mono", "SFMono-Regular", Consolas, monospace;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Header */
+.dashboard-header {
+    background-color: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-color);
+    padding: 10px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.logo-zone h1 {
+    font-family: "Orbitron", monospace;
+    font-size: 16px;
+    font-weight: 900;
+    letter-spacing: 4px;
+    display: inline-block;
+    margin-right: 12px;
+    color: var(--accent-cyan);
+    text-shadow: 0 0 20px rgba(0, 229, 192, 0.4);
+}
+
+.system-status {
+    font-size: 9px;
+    font-family: "Share Tech Mono", monospace;
+    padding: 2px 8px;
+    border-radius: 2px;
+    font-weight: bold;
+}
+
+.system-status.online {
+    background-color: rgba(0, 184, 212, 0.08);
+    color: var(--accent-blue);
+    border: 1px solid rgba(0, 184, 212, 0.3);
+    animation: statusPulse 3s ease-in-out infinite;
+}
+
+@keyframes statusPulse {
+    0%,
+    100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.6;
+    }
+}
+
+/* HIL Toggle */
+.hil-toggle-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.toggle-meta {
+    font-size: 10px;
+    color: var(--text-muted);
+    font-family: "Share Tech Mono", monospace;
+    letter-spacing: 1px;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 200px;
+    height: 28px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    transition: 0.3s;
+    display: flex;
+    align-items: center;
+    padding: 0 6px;
+    overflow: hidden;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 94px;
+    left: 4px;
+    bottom: 3px;
+    background-color: rgba(200, 151, 26, 0.15);
+    border: 1px solid rgba(200, 151, 26, 0.4);
+    transition: 0.3s;
+    z-index: 1;
+}
+
+/* FIX: checked = AUTONOMOUS = thumb moves RIGHT to underline AUTONOMOUS label */
+input:checked + .slider:before {
+    transform: translateX(96px);
+    background-color: rgba(0, 229, 192, 0.12);
+    border: 1px solid var(--accent-cyan);
+}
+
+.label-text {
+    font-size: 9px;
+    font-family: "Share Tech Mono", monospace;
+    font-weight: bold;
+    width: 50%;
+    text-align: center;
+    z-index: 2;
+    transition: color 0.3s;
+    letter-spacing: 0.5px;
+}
+
+/* FIX: HIL REQUIRED on left, AUTONOMOUS on right - thumb correctly underlines each */
+.manual-text {
+    color: var(--accent-yellow);
+}
+.autonomous-text {
+    color: var(--text-muted);
+}
+
+input:checked + .slider .manual-text {
+    color: var(--text-muted);
+}
+input:checked + .slider .autonomous-text {
+    color: var(--accent-cyan);
+}
+
+.slider.round {
+    border-radius: 3px;
+}
+.slider.round:before {
+    border-radius: 2px;
+}
+
+/* Layout */
+.dashboard-layout {
+    flex: 1;
+    display: flex;
+    padding: 12px;
+    gap: 12px;
+    min-height: 0; /* FIX: prevent flex children from overflowing */
+}
+
+.panel-column {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-height: 0;
+}
+
+.left-panel {
+    width: 22%;
+}
+.center-panel {
+    flex: 1;
+    min-width: 0;
+}
+.right-panel {
+    width: 24%;
+}
+
+/* FIX: all columns must fill dashboard height */
+.left-panel,
+.center-panel,
+.right-panel {
+    height: 100%;
+}
+
+.card {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* FIX: canvas card fills center column */
+.canvas-card {
+    flex: 1;
+    min-height: 0;
+}
+
+/* FIX: log panel fills remaining left column space */
+.log-panel {
+    flex: 1;
+    min-height: 0;
+}
+
+/* FIX: ROE card fills right column */
+.roe-card {
+    flex: 1;
+    min-height: 0;
+}
+
+.panel h2 {
+    font-family: "Share Tech Mono", monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+    color: var(--text-muted);
+}
+
+.panel-desc {
+    font-size: 10px;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+    opacity: 0.7;
+}
+
+/* Policy editor */
+#policyEditor {
+    flex: 1;
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
+    color: #5eb8cc;
+    font-family: "Share Tech Mono", Consolas, monospace;
+    font-size: 11px;
+    padding: 10px;
+    resize: none;
+    outline: none;
+    line-height: 1.6;
+    min-height: 120px;
+}
+
+#policyEditor:focus {
+    border-color: var(--accent-blue);
+}
+
+.panel-actions {
+    margin-top: 10px;
+    display: flex;
+    gap: 8px;
+}
+
+.btn {
+    font-family: "Share Tech Mono", monospace;
+    font-size: 10px;
+    font-weight: bold;
+    padding: 7px 12px;
+    border-radius: 3px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 0.15s;
+    letter-spacing: 0.5px;
+}
+
+.btn-primary {
+    background-color: rgba(0, 184, 212, 0.08);
+    border-color: rgba(0, 184, 212, 0.25);
+    color: var(--accent-blue);
+}
+.btn-primary:hover {
+    background-color: rgba(0, 184, 212, 0.18);
+    border-color: var(--accent-blue);
+}
+
+.btn-secondary {
+    background-color: var(--bg-tertiary);
+    border-color: var(--border-color);
+    color: var(--text-muted);
+}
+.btn-secondary:hover {
+    background-color: #1e2d3d;
+    color: var(--text-main);
+}
+
+.btn-danger {
+    background-color: rgba(192, 57, 43, 0.15);
+    border-color: rgba(192, 57, 43, 0.35);
+    color: #e74c3c;
+}
+.btn-danger:hover {
+    background-color: var(--accent-red);
+    color: white;
+    border-color: var(--accent-red);
+}
+
+/* Canvas */
+.canvas-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    flex-shrink: 0;
+}
+
+.canvas-controls .hint-text {
+    font-size: 9px;
+    color: var(--text-muted);
+    opacity: 0.6;
+    font-family: "Share Tech Mono", monospace;
+}
+
+/* FIX: canvas-container must grow and let canvas fill it */
+.canvas-container {
+    flex: 1;
+    min-height: 0;
+    position: relative;
+    display: flex;
+}
+
+/* Background div takes filter burden */
+.canvas-bg {
+    position: absolute;
+    inset: 0;
+    background-color: #02050a;
+    background-image: url("https://images.unsplash.com/photo-1682687220063-4742bd7fd538?auto=format&fit=crop&w=1200&q=80");
+    background-size: cover;
+    background-position: center;
+    background-blend-mode: multiply;
+    filter: brightness(0.09) contrast(1.8) saturate(0.15) hue-rotate(165deg);
+    transition: filter 0.1s ease;
+}
+
+#simCanvas {
+    flex: 1;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    filter: none;
+    transition: filter 0.1s ease;
+    cursor: crosshair;
+    position: relative;
+    z-index: 1;
+    border-radius: 2px;
+}
+
+.hardware-glitch .canvas-bg {
+    filter: brightness(0.5) contrast(2.5) saturate(3) hue-rotate(0deg) !important;
+}
+
+#simCanvas {
+    flex: 1;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    filter: none;
+    transition: filter 0.1s ease;
+    cursor: crosshair;
+    position: relative;
+    z-index: 1;
+    border-radius: 2px;
+}
+
+.canvas-bg.hardware-glitch {
+    animation: signalShock 0.3s ease-out;
+}
+
+@keyframes signalShock {
+    0% {
+        transform: translate(3px, 2px) skewX(0deg);
+    }
+    20% {
+        transform: translate(-3px, -3px) skewX(4deg);
+    }
+    40% {
+        transform: translate(2px, -2px) skewX(-4deg);
+    }
+    60% {
+        transform: translate(-4px, 1px) skewX(2deg);
+    }
+    80% {
+        transform: translate(3px, 3px) skewX(0deg);
+    }
+    100% {
+        transform: translate(0, 0) skewX(0deg);
+    }
+}
+
+/* Log */
+#logContainer {
+    flex: 1;
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
+    padding: 8px;
+    overflow-y: auto;
+    font-family: "Share Tech Mono", monospace;
+    font-size: 10px;
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 3px;
+    min-height: 0;
+}
+
+#logContainer::-webkit-scrollbar {
+    width: 4px;
+}
+#logContainer::-webkit-scrollbar-track {
+    background: var(--bg-primary);
+}
+#logContainer::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 2px;
+}
+
+.log-entry {
+    line-height: 1.5;
+    padding-bottom: 2px;
+    border-bottom: 1px dashed rgba(30, 45, 61, 0.6);
+}
+.log-entry.system {
+    color: var(--text-muted);
+}
+.log-entry.subdue {
+    color: #2ecc71;
+}
+.log-entry.observe {
+    color: var(--accent-yellow);
+}
+.log-entry.hard-stop {
+    color: #e74c3c;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+}
+
+/* ROE Pipeline - FIX: .roe-pipeline exists in HTML; only .roe-pipeline-grid was styled */
+.roe-pipeline {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding-right: 2px;
+}
+
+.roe-pipeline::-webkit-scrollbar {
+    width: 3px;
+}
+.roe-pipeline::-webkit-scrollbar-track {
+    background: var(--bg-primary);
+}
+.roe-pipeline::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+}
+
+.roe-gate {
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    padding: 7px 10px;
+    font-family: "Share Tech Mono", monospace;
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.gate-num {
+    font-size: 10px;
+    font-weight: bold;
+    color: var(--text-muted);
+    width: 22px;
+    opacity: 0.5;
+}
+
+.gate-info {
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+}
+
+.gate-name {
+    color: var(--text-main);
+}
+.gate-status {
+    font-weight: bold;
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+}
+
+.roe-gate.processing {
+    border-color: var(--accent-blue);
+}
+.roe-gate.processing .gate-status {
+    color: var(--accent-blue);
+}
+.roe-gate.processing::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        var(--accent-cyan),
+        transparent
+    );
+    width: 60%;
+    animation: scanningGate 0.5s linear infinite;
+}
+
+.roe-gate.passed {
+    border-color: rgba(26, 122, 58, 0.6);
+    background: linear-gradient(
+        90deg,
+        rgba(26, 122, 58, 0.08) 0%,
+        transparent 100%
+    );
+}
+.roe-gate.passed .gate-status {
+    color: #2ecc71;
+}
+.roe-gate.passed .gate-num {
+    color: #2ecc71;
+    opacity: 0.8;
+}
+
+.roe-gate.failed {
+    border-color: rgba(200, 151, 26, 0.5);
+}
+.roe-gate.failed .gate-status {
+    color: var(--accent-yellow);
+}
+
+.roe-gate.hard-stop-state {
+    border-color: var(--accent-red);
+    background-color: rgba(192, 57, 43, 0.08);
+    animation: pulseRed 0.6s infinite alternate;
+}
+.roe-gate.hard-stop-state .gate-status {
+    color: #e74c3c;
+}
+.roe-gate.hard-stop-state .gate-num {
+    color: #e74c3c;
+    opacity: 1;
+}
+
+/* HIL Modal */
+.hil-modal {
+    background-color: var(--bg-tertiary);
+    border: 1px solid var(--accent-yellow);
+    border-radius: 3px;
+    padding: 12px;
+    margin-top: 10px;
+    flex-shrink: 0;
+    animation: fadeIn 0.2s forwards;
+}
+.hil-modal h3 {
+    font-size: 11px;
+    color: var(--accent-yellow);
+    margin-bottom: 6px;
+    letter-spacing: 0.5px;
+}
+.hil-modal p {
+    font-size: 10px;
+    margin-bottom: 10px;
+    color: var(--text-main);
+    line-height: 1.5;
+}
+.modal-buttons {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+.hidden {
+    display: none !important;
+}
+
+@keyframes scanningGate {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(260%);
+    }
+}
+
+@keyframes pulseRed {
+    0% {
+        box-shadow: inset 0 0 4px rgba(192, 57, 43, 0.2);
+    }
+    100% {
+        box-shadow: inset 0 0 16px rgba(192, 57, 43, 0.5);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

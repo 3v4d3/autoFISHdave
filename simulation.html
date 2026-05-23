@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>D.A.V.E. // Autonomous Harvest & ROE Dashboard</title>
+        <link rel="stylesheet" href="styles.css" />
+    </head>
+    <body>
+        <header class="dashboard-header">
+            <div class="logo-zone">
+                <h1>D.A.V.E.</h1>
+                <span class="system-status online">MESH ACTIVE</span>
+            </div>
+
+            <div class="hil-toggle-container">
+                <span class="toggle-meta">ENGAGEMENT MODE:</span>
+                <label class="switch">
+                    <input type="checkbox" id="hilSwitch" checked />
+                    <span class="slider round">
+                        <!-- FIX: HIL REQUIRED left, AUTONOMOUS right — thumb underlines correct label when checked -->
+                        <span class="label-text manual-text">HIL REQUIRED</span>
+                        <span class="label-text autonomous-text"
+                            >AUTONOMOUS</span
+                        >
+                    </span>
+                </label>
+            </div>
+        </header>
+
+        <main class="dashboard-layout">
+            <section class="panel-column left-panel">
+                <div class="panel card">
+                    <h2>🛠️ Policy Configuration (Hot-Reload)</h2>
+                    <p class="panel-desc">
+                        JSON schema definitions driving mesh thresholds.
+                    </p>
+                    <textarea id="policyEditor" spellcheck="false"></textarea>
+                    <div class="panel-actions">
+                        <button id="applyPolicyBtn" class="btn btn-primary">
+                            Apply & Hot-Reload
+                        </button>
+                        <button
+                            id="resetSimulationBtn"
+                            class="btn btn-secondary"
+                        >
+                            Clear Contacts
+                        </button>
+                    </div>
+                </div>
+
+                <div class="panel card log-panel">
+                    <h2>📑 Live Engagement Log</h2>
+                    <div id="logContainer" class="log-container"></div>
+                </div>
+            </section>
+
+            <section class="panel-column center-panel">
+                <div class="panel card canvas-card">
+                    <div class="canvas-header">
+                        <h2>🌊 Spatial Mesh Environment</h2>
+                        <div class="canvas-controls">
+                            <span class="hint-text"
+                                >↯ Click canvas to inject HUMAN contact</span
+                            >
+                        </div>
+                    </div>
+                    <div class="canvas-container">
+                        <div class="canvas-bg"></div>
+                        <canvas id="simCanvas"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <section class="panel-column right-panel">
+                <div class="panel card roe-card">
+                    <h2>🛡️ Rules of Engagement (ROE) Pipeline</h2>
+                    <p class="panel-desc">
+                        Real-time gate serialization status for active target
+                        scan.
+                    </p>
+
+                    <div class="roe-pipeline" id="roePipeline">
+                        <div class="roe-gate" data-step="1">
+                            <div class="gate-num">01</div>
+                            <div class="gate-info">
+                                <span class="gate-name">Signal Detection</span
+                                ><span class="gate-status">IDLE</span>
+                            </div>
+                        </div>
+                        <div class="roe-gate" data-step="2">
+                            <div class="gate-num">02</div>
+                            <div class="gate-info">
+                                <span class="gate-name">Classification</span
+                                ><span class="gate-status">IDLE</span>
+                            </div>
+                        </div>
+                        <div class="roe-gate" data-step="3">
+                            <div class="gate-num">03</div>
+                            <div class="gate-info">
+                                <span class="gate-name">Localization</span
+                                ><span class="gate-status">IDLE</span>
+                            </div>
+                        </div>
+                        <div class="roe-gate" data-step="4">
+                            <div class="gate-num">04</div>
+                            <div class="gate-info">
+                                <span class="gate-name">Kinematic Tracking</span
+                                ><span class="gate-status">IDLE</span>
+                            </div>
+                        </div>
+                        <div class="roe-gate" data-step="5">
+                            <div class="gate-num">05</div>
+                            <div class="gate-info">
+                                <span class="gate-name"
+                                    >Policy Boundary Check</span
+                                ><span class="gate-status">IDLE</span>
+                            </div>
+                        </div>
+                        <div class="roe-gate" data-step="6">
+                            <div class="gate-num">06</div>
+                            <div class="gate-info">
+                                <span class="gate-name"
+                                    >Confidence Verification</span
+                                ><span class="gate-status">IDLE</span>
+                            </div>
+                        </div>
+                        <div class="roe-gate" data-step="7" id="gateStep7">
+                            <div class="gate-num">07</div>
+                            <div class="gate-info">
+                                <span class="gate-name">HIL Authorization</span
+                                ><span class="gate-status">IDLE</span>
+                            </div>
+                        </div>
+                        <div class="roe-gate" data-step="8">
+                            <div class="gate-num">08</div>
+                            <div class="gate-info">
+                                <span class="gate-name">Target Allocation</span
+                                ><span class="gate-status">IDLE</span>
+                            </div>
+                        </div>
+                        <div class="roe-gate" data-step="9">
+                            <div class="gate-num">09</div>
+                            <div class="gate-info">
+                                <span class="gate-name">Actuator Prep</span
+                                ><span class="gate-status">IDLE</span>
+                            </div>
+                        </div>
+                        <div class="roe-gate" data-step="10">
+                            <div class="gate-num">10</div>
+                            <div class="gate-info">
+                                <span class="gate-name">Execution / Subdue</span
+                                ><span class="gate-status">IDLE</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="hilModal" class="hil-modal hidden">
+                        <h3>⚠️ Manual Engagement Action Required</h3>
+                        <p id="hilModalTargetInfo">
+                            Targeting pending confirmation...
+                        </p>
+                        <div class="modal-buttons">
+                            <button id="modalConfirmBtn" class="btn btn-danger">
+                                CONFIRM SUBDUE
+                            </button>
+                            <button
+                                id="modalRejectBtn"
+                                class="btn btn-secondary"
+                            >
+                                ABORT
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <script src="simulation.js"></script>
+    </body>
+</html>
